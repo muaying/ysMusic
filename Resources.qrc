@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/imgs/miao.png</file>
+        <file>res/sheet/test.txt</file>
+    </qresource>
+</RCC>
