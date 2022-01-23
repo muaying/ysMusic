@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include <QMessageBox>
 #include <QFile>
+#include <utility>
+#include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent) :
         QMainWindow(parent),
@@ -34,6 +36,15 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->btnResetHotkey, &QPushButton::clicked, this, &MainWindow::resetHotKey);
     connect(ui->btnReadPlay, &QPushButton::clicked, this, &MainWindow::readPlay);
     connect(this, &MainWindow::doPlay, &player, &Player::play);
+	connect(ui->btnSelect,&QPushButton::clicked,this,[this](){
+		QString  t= QFileDialog::getOpenFileName(this,"选择乐谱","./", tr("乐谱文件 (*.txt)"));
+		if(!t.isEmpty())
+		{
+			fileName=t;
+			QMessageBox::information(this,"提示","选择文件成功");
+
+		}
+	});
     connect(qHotkey, &QHotkey::activated, this, [this]()
     {
         if (playOk == true)
@@ -44,7 +55,7 @@ MainWindow::MainWindow(QWidget *parent) :
             } else
             {
                 player.setPlayFlag(true);
-                emit doPlay(Sheet, ui->spbDelay->value());
+                emit doPlay(musics, ui->spbDelay->value());
             }
         }
     });
@@ -132,16 +143,44 @@ void MainWindow::readPlay()
             }
             if (!sheet.isEmpty())
             {
-                //检查琴谱
-                for (auto &e: sheet)
-                    if (e < 'A' || e > 'Z')
-                    {
-                        QMessageBox::warning(this, "错误", "无法解析该琴谱,请检查格式");
-                        playOk = false;
-                        return;
-                    }
+				musics.clear();
+				sheet=sheet.toUpper();
+                //解析琴谱
+				for(int i=0;i<sheet.size();++i)
+				{
+					QString m;//按键
+					int d=1;//延时
+					if(sheet[i]=='(') //存在和弦
+					{
+						//找按键
+						while(sheet[(++i)]!=')'&&i<sheet.size())
+						{
+							if('A'<=sheet[i]&&sheet[i]<='Z')
+								m.append(sheet[i]);
+						}
+						++i;
+						if( i<sheet.size()&&sheet[i]>='1'&&sheet[i]<='9')
+							d=QString(sheet[i]).toInt();
+						else
+							--i;
+					}else  if('A'<=sheet[i]&&sheet[i]<='Z') //没有和弦
+					{
+						m.append(sheet[i]);
+						//确定延时
+						++i;
+						if( i<sheet.size()&&sheet[i]>='1'&&sheet[i]<='9')
+							d=QString(sheet[i]).toInt();
+						else
+							--i;
+					}else
+						;
+					if(!m.isEmpty())
+					{
+						std::pair<QString,int> p= std::make_pair(m,d);
+						musics.append(p);
+					}
+				}
             }
-            Sheet = sheet;
             playOk = true;
         }
         catch (std::exception e)
@@ -149,7 +188,7 @@ void MainWindow::readPlay()
             QMessageBox::warning(this, "错误", "无法解析该琴谱,请检查格式");
             playOk = false;
         }
-        QMessageBox::information(this, "提示", "请在原神中使用[琴],再按下热键[" + qHotkey->shortcut().toString() + ']');
+        QMessageBox::information(this, "提示", "请在原神中使用[琴],再按下热键[" + qHotkey->shortcut().toString() + "] 弹琴,再次按下停止演奏");
     }
 
 }

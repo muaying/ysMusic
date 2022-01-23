@@ -17,10 +17,7 @@ public:
 
 public
     slots:
-            void play(QString
-    sheet,
-    int delay
-    );
+            void play(QList<std::pair<QString,int>> musics,int delay);
 
     void setPlayFlag(bool flag);
 
@@ -29,10 +26,7 @@ public
 private:
     bool flag;
     bool playing;
-
-    void playKey(char key);
-
-    void playKey(char key1, char key2);
+    void playKey(QString keys);
 };
 
 

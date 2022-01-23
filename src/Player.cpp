@@ -7,68 +7,37 @@
 #include <windows.h>
 #include <QThread>
 
-Player::Player(QObject *parent) : QObject(parent)
-{
+Player::Player(QObject *parent) : QObject(parent) {
     playing = false;
 }
 
-bool Player::isPlaying()
-{
+bool Player::isPlaying() {
     return playing;
 }
 
-void Player::play(QString
-sheet,
-int delay
-)
+void Player::play(QList <std::pair<QString, int>> musics, int delay)
 {
-playing = true;
-auto it = sheet.cbegin();
-while(
-flag &&it
-!=sheet.
-
-cend()
-
-)
-{
-
-qDebug()
-
-<<"正在弹奏";
-playKey(it
-->
-
-toLatin1()
-
-);
-++
-it;
-QThread::msleep(delay);
+	playing=true;
+	//qDebug()<<"正在弹奏";
+	auto m=musics.begin();
+	while(flag&&m!=musics.end())
+	{
+		//qDebug()<<"按键"<<m->first;
+		//qDebug()<<"延时"<<m->second;
+		playKey(m->first);
+		QThread::msleep(delay*m->second);
+		++m;
+	}
+	//qDebug()<<"弹奏完成";
+	playing=false;
 }
-
-qDebug()
-
-<<"弹奏完成";
-playing = false;
-}
-
-void Player::playKey(char key)
+void Player::playKey(QString keys)
 {
-    keybd_event(key, 0, 0, 0);
-    keybd_event(key, 0, KEYEVENTF_KEYUP, 0);
+    for(auto k:keys)
+        keybd_event(k.toLatin1(),0,0,0);
+	for(auto it=keys.rbegin();it!=keys.rend();++it)
+		keybd_event(it->toLatin1(),0,KEYEVENTF_KEYUP,0);
 }
-
-
-void Player::playKey(char key1, char key2)
-{
-    keybd_event(key1, 0, 0, 0);
-    keybd_event(key2, 0, 0, 0);
-    keybd_event(key1, 0, KEYEVENTF_KEYUP, 0);
-    keybd_event(key2, 0, KEYEVENTF_KEYUP, 0);
-}
-
-void Player::setPlayFlag(bool flag)
-{
+void Player::setPlayFlag(bool flag) {
     this->flag = flag;
 }

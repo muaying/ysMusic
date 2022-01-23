@@ -27,10 +27,7 @@ private
     void readPlay();
 
     signals:
-            void doPlay(QString
-    sheet,
-    int delay
-    );
+            void doPlay(QList <std::pair<QString, int>> music,int delay);
 private:
     Ui::MainWindow *ui;
     QHotkey *qHotkey;
@@ -39,7 +36,7 @@ private:
     //琴谱 文件名字
     QString fileName;
     //琴谱
-    QString Sheet;
+	QList <std::pair<QString, int>> musics;
     bool playOk;//可以弹奏
 
 };

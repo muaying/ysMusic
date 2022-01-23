@@ -1,29 +1,12 @@
 author: yxqin,
 musicName:黑人抬棺,
-delay: 100,
+delay: 85,
 sheet:
-    F F F F H H H H G G G G Q Q Q Q W W W W W W W W W W W W
-    G F D A S S H G F D D D G F D S S R E R E R S S R E R E R S
-    S H G F D D D G F D S S R E R E R S S R E R E R S
-    S H G F D D D G F D S S R E R E R S S R E R E R S
-    S H G F D D D G F D S S R E R E R S S R E R E R
-    F F F F H H H H G G G G Q Q Q Q W W W W W W W W
-    F F F F H H H H G G G G Q Q Q Q W W W W W W W W W W W W
-    G F D A S S H G F D D D G F D S S R E R E R S S R E R E R S
-    S H G F D D D G F D S S R E R E R S S R E R E R S
-    S H G F D D D G F D S S R E R E R S S R E R E R S
-    S H G F D D D G F D S S R E R E R S S R E R E R
-    F F F F H H H H G G G G Q Q Q Q W W W W W W W W
-    F F F F H H H H G G G G Q Q Q Q W W W W W W W W W W W W
-    G F D A S S H G F D D D G F D S S R E R E R S S R E R E R S
-    S H G F D D D G F D S S R E R E R S S R E R E R S
-    S H G F D D D G F D S S R E R E R S S R E R E R S
-    S H G F D D D G F D S S R E R E R S S R E R E R
-    F F F F H H H H G G G G Q Q Q Q W W W W W W W W
-    F F F F H H H H G G G G Q Q Q Q W W W W W W W W W W W W
-    G F D A S S H G F D D D G F D S S R E R E R S S R E R E R S
-    S H G F D D D G F D S S R E R E R S S R E R E R S
-    S H G F D D D G F D S S R E R E R S S R E R E R S
-    S H G F D D D G F D S S R E R E R S S R E R E R
-    F F F F H H H H G G G G Q Q Q Q W W W W W W W W
+F2 F2 F2 F2 H2 H2 H2 H2 G2 G2 G2 G2 Q2 Q2 Q2 Q2 W2 W2 W2 W2 W2 W2 W2 W2 W2 W2 W W10
+G3 F3 D3 A3 S3 S3 H3 G3 F3 D3 D3 D3 G3 F3 D3 S3 S3 R3 E3 R3 E3 R3 S3 S3 R3 E3 R3 E3 R3 S3
+S3 H3 G3 F3 D3 D3 D3 G3 F3 D3 S3 S3 R3 E3 R3 E3 R3 S3 S3 R3 E3 R3 E3 R3 S3
+S3 H3 G3 F3 D3 D3 D3 G3 F3 D3 S3 S3 R3 E3 R3 E3 R3 S3 S3 R3 E3 R3 E3 R3 S3
+S3 H3 G3 F3 D3 D3 D3 G3 F3 D3 S3 S3 R3 E3 R3 E3 R3 S3 S3 R3 E3 R3 E3 R10
+F2 F2 F2 F2 H2 H2 H2 H2 G2 G2 G2 G2 Q2 Q2 Q2 Q2 W2 W2 W2 W2 W2 W2 W2 W2 W2 W2 W W2
+
 
