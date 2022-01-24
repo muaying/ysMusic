@@ -1,10 +1,14 @@
 ## 作者说明
-本程序基于QT6，IDE为CLion
+本程序基于QT6 社区版本，IDE为CLion
 
 这是一个练习QT的demo,希望大家不要嫌弃
 
 曲谱来自：
 https://space.bilibili.com/76052941
+
+## 下载
+阿里云盘：https://www.aliyundrive.com/s/oqxAk87aZQ9
+PS: 使用Enigma Virtual Box 打包QT 文件稍微有点大，如果不放心 请自行编译
 
 ## 使用步骤
 1. 管理员身份启动程序

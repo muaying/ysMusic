@@ -231,5 +231,5 @@ void MainWindow::about()
 					   R"(作者：越行勤
 程序简介：原神简易弹琴助手
 博客：blog.yxqin.top
-项目地址：https://gitee.com/)");
+项目地址：https://gitee.com/yuexingqin/ysMusic)");
 }
