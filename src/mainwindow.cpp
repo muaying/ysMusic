@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
     player.moveToThread(thread);
     thread->start();
 	fileName=":/res/sheet/1.txt";
-	loadSheet(fileName);
+	musics=loadSheet(fileName);
     //槽函数绑定
     //重设热键
 	connect(ui->btnResetHotkey, &QPushButton::clicked, this, &MainWindow::resetHotKey);
