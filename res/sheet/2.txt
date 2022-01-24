@@ -1,6 +1,6 @@
 author: 网络,
 musicName:黑人抬棺,
-delay: 400,
+delay: 310,
 sheet:
 F  F  F  F  H  H  H  H  G  G  G  G  Q  Q  Q  Q  W  W  W  W  W  W  W  W  W  W  W
 G  F  D  A  S  S  H  G  F  D  D  D  G  F  D  S  S  R  E  R  E  R  S  S  R  E  R  E  R  S 

@@ -5,7 +5,7 @@
 
 曲谱来自：
 https://space.bilibili.com/76052941
-
+B站演示 视频：https://www.bilibili.com/video/BV1LT4y1y73C?share_source=copy_web
 ## 下载
 阿里云盘：https://www.aliyundrive.com/s/sCLpT1vJi51
 PS: 使用Enigma Virtual Box 打包QT 文件稍微有点大，如果不放心 请自行编译
