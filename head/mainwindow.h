@@ -20,14 +20,15 @@ public:
 
     ~MainWindow();
 
-private
-    slots:
-            void resetHotKey();
-
-    void readPlay();
+private slots:
+	void resetHotKey();
 
     signals:
             void doPlay(QList <std::pair<QString, int>> music,int delay);
+
+private:
+	void readPlay();
+	bool loadSheet(QString filename);
 private:
     Ui::MainWindow *ui;
     QHotkey *qHotkey;
@@ -37,7 +38,6 @@ private:
     QString fileName;
     //琴谱
 	QList <std::pair<QString, int>> musics;
-    bool playOk;//可以弹奏
 
 };
 

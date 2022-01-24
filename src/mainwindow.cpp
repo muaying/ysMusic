@@ -13,7 +13,6 @@ MainWindow::MainWindow(QWidget *parent) :
     //初始化 ui
     setWindowIcon(QIcon(":/res/imgs/miao.png"));
     ui->setupUi(this);
-    ui->spbDelay->setValue(50);
     //注册热键
     qHotkey = new QHotkey(QKeySequence("F6"), false, this);
     if (!qHotkey->setRegistered(true))
@@ -27,27 +26,33 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->cmbHot2->setCurrentText("F6");
     }
     //初始化 弹琴
-    playOk = false;
     thread = new QThread(this);
     player.moveToThread(thread);
     thread->start();
+	loadSheet(":/res/sheet/1.txt");
     //槽函数绑定
     //重设热键
-    connect(ui->btnResetHotkey, &QPushButton::clicked, this, &MainWindow::resetHotKey);
-    connect(ui->btnReadPlay, &QPushButton::clicked, this, &MainWindow::readPlay);
-    connect(this, &MainWindow::doPlay, &player, &Player::play);
-	connect(ui->btnSelect,&QPushButton::clicked,this,[this](){
+	connect(ui->btnResetHotkey, &QPushButton::clicked, this, &MainWindow::resetHotKey);
+	//选择自带琴谱
+	connect(ui->cmbSelect,&QComboBox::activated,this,[this]()
+	{
+		fileName=":/res/sheet/"+ui->cmbSelect->currentText()+".txt";
+	});
+	//选择 自定义琴谱
+	connect(ui->btnSelect,&QPushButton::clicked,this,[this]()
+	{
 		QString  t= QFileDialog::getOpenFileName(this,"选择乐谱","./", tr("乐谱文件 (*.txt)"));
 		if(!t.isEmpty())
 		{
 			fileName=t;
-			QMessageBox::information(this,"提示","选择文件成功");
-
 		}
 	});
+	//载入琴谱
+    connect(ui->btnLoadSheet, &QPushButton::clicked, this, &MainWindow::readPlay);
+	//触发热键
     connect(qHotkey, &QHotkey::activated, this, [this]()
     {
-        if (playOk == true)
+        if (musics.isEmpty() == false)
         {
             if (player.isPlaying())
             {
@@ -58,7 +63,10 @@ MainWindow::MainWindow(QWidget *parent) :
                 emit doPlay(musics, ui->spbDelay->value());
             }
         }
+		else
+			QMessageBox::information(this, "提示", "尚未载入琴谱，请选择琴谱后再次按下热键");
     });
+	connect(this, &MainWindow::doPlay, &player, &Player::play);
 }
 
 void MainWindow::resetHotKey()
@@ -80,8 +88,6 @@ void MainWindow::resetHotKey()
         ui->cmbHot1->setCurrentText("空");
         ui->cmbHot2->setCurrentText("空");
     }
-
-
 }
 
 MainWindow::~MainWindow()
@@ -94,58 +100,67 @@ MainWindow::~MainWindow()
 
 void MainWindow::readPlay()
 {
-    if (fileName.isEmpty())
-        fileName = ":/res/sheet/" + ui->cmbSelect->currentText() + ".txt";
-    QFile qFile(fileName);
-    if (!qFile.open(QFile::ReadOnly))
-    {
-        QMessageBox::warning(this, "错误", "打开文件失败");
-    } else
-    {
-        try
-        {
-            QByteArray data = qFile.readAll();
-            qFile.close();
-            //获取 作者 曲名 以及  曲谱
-            QString sheet;
-            QByteArray buf;
-            for (auto it = data.cbegin(); it < data.cend(); ++it)
-            {
+	if(loadSheet(fileName))
+		QMessageBox::information(this, "提示", "载入成功,请在原神中使用[琴],再按下热键[" + qHotkey->shortcut().toString() + "] 弹琴,\n再次按下停止演奏");
+	else
+	{
+		QMessageBox::information(this, "提示", "载入失败,请查看帮助以及检查琴谱格式,以及琴谱文件是否存在");
+		musics.clear();
+	}
+}
 
-                if (*it == ' ' || *it == '\n' || *it == '\r')
-                {
-                    continue;
-                } else if (*it == ':')
-                {
-                    QByteArray tmp;
-                    while (*it != ',' && it != data.cend() && *it != '\x00')
-                    {
-                        ++it;
-                        if (*it == ' ' || *it == '\n' || *it == '\r' || *it == ',' || *it == '\x00')
-                            continue;
-                        tmp.append(*it);
-                    }
-                    if (buf == "author")
-                        this->ui->editAuthor->setText(tmp);
-                    else if (buf == "musicName")
-                        this->ui->editMusicName->setText(tmp);
-                    else if (buf == "delay")
-                    {
-                        bool ok;
-                        int val = tmp.toInt(&ok);
-                        if (ok)
-                            this->ui->spbDelay->setValue(val);
-                    } else if (buf == "sheet")
-                        sheet = tmp;
-                    buf.clear();
-                } else
-                    buf.append(*it);
-            }
-            if (!sheet.isEmpty())
-            {
+//载入并解析琴谱
+bool MainWindow::loadSheet(QString filename)
+{
+	QFile qFile(filename);
+	if (!qFile.open(QFile::ReadOnly))
+	{
+		QMessageBox::warning(this, "错误", "打开文件失败");
+	} else
+	{
+		try
+		{
+			QByteArray data = qFile.readAll();
+			qFile.close();
+			//获取 作者 曲名 以及  曲谱 去除所有空格行号 以及文件 结束标志
+			QString sheet;
+			QByteArray buf;
+			for (auto it = data.cbegin(); it < data.cend(); ++it)
+			{
+				if (*it == ' ' || *it == '\n' || *it == '\r')
+				{
+					continue;
+				} else if (*it == ':')
+				{
+					QByteArray tmp;
+					while (*it != ',' && it != data.cend() && *it != '\x00')
+					{
+						++it;
+						if (*it == ' ' || *it == '\n' || *it == '\r' || *it == ',' || *it == '\x00')
+							continue;
+						tmp.append(*it);
+					}
+					if (buf == "author")
+						this->ui->editAuthor->setText(tmp);
+					else if (buf == "musicName")
+						this->ui->editMusicName->setText(tmp);
+					else if (buf == "delay")
+					{
+						bool ok;
+						int val = tmp.toInt(&ok);
+						if (ok)
+							this->ui->spbDelay->setValue(val);
+					} else if (buf == "sheet")
+						sheet = tmp;
+					buf.clear();
+				} else
+					buf.append(*it);
+			}
+			//解析琴谱  无视大小写
+			if (!sheet.isEmpty())
+			{
 				musics.clear();
 				sheet=sheet.toUpper();
-                //解析琴谱
 				for(int i=0;i<sheet.size();++i)
 				{
 					QString m;//按键
@@ -180,15 +195,15 @@ void MainWindow::readPlay()
 						musics.append(p);
 					}
 				}
-            }
-            playOk = true;
-        }
-        catch (std::exception e)
-        {
-            QMessageBox::warning(this, "错误", "无法解析该琴谱,请检查格式");
-            playOk = false;
-        }
-        QMessageBox::information(this, "提示", "请在原神中使用[琴],再按下热键[" + qHotkey->shortcut().toString() + "] 弹琴,再次按下停止演奏");
-    }
-
+			}
+		}
+		catch (std::exception e)
+		{
+			QMessageBox::warning(this, "错误", "无法解析该琴谱,请检查格式");
+			return false;
+		}
+		return true;
+	}
+	return false;
 }
+

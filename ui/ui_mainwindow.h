@@ -33,20 +33,22 @@ class Ui_MainWindow
 public:
     QAction *actionOpen;
     QAction *actionAbout;
+    QAction *actionHelp;
     QWidget *centralwidget;
     QVBoxLayout *verticalLayout;
     QGroupBox *groupBox_2;
-    QLabel *label_2;
-    QSpinBox *spbDelay;
-    QComboBox *cmbSelect;
-    QLabel *label_3;
-    QPushButton *btnSelect;
     QGroupBox *groupBox_3;
     QLabel *label_4;
     QLabel *label_5;
     QLineEdit *editAuthor;
     QLineEdit *editMusicName;
-    QPushButton *btnReadPlay;
+    QSpinBox *spbDelay;
+    QLabel *label_2;
+    QGroupBox *groupBox_4;
+    QLabel *label_3;
+    QComboBox *cmbSelect;
+    QPushButton *btnLoadSheet;
+    QPushButton *btnSelect;
     QGroupBox *groupBox;
     QHBoxLayout *horizontalLayout_2;
     QPushButton *btnResetHotkey;
@@ -69,6 +71,8 @@ public:
         actionOpen->setObjectName(QString::fromUtf8("actionOpen"));
         actionAbout = new QAction(MainWindow);
         actionAbout->setObjectName(QString::fromUtf8("actionAbout"));
+        actionHelp = new QAction(MainWindow);
+        actionHelp->setObjectName(QString::fromUtf8("actionHelp"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         verticalLayout = new QVBoxLayout(centralwidget);
@@ -76,26 +80,9 @@ public:
         groupBox_2 = new QGroupBox(centralwidget);
         groupBox_2->setObjectName(QString::fromUtf8("groupBox_2"));
         groupBox_2->setMinimumSize(QSize(0, 196));
-        label_2 = new QLabel(groupBox_2);
-        label_2->setObjectName(QString::fromUtf8("label_2"));
-        label_2->setGeometry(QRect(20, 110, 91, 16));
-        spbDelay = new QSpinBox(groupBox_2);
-        spbDelay->setObjectName(QString::fromUtf8("spbDelay"));
-        spbDelay->setGeometry(QRect(120, 110, 42, 22));
-        spbDelay->setMaximum(20000);
-        cmbSelect = new QComboBox(groupBox_2);
-        cmbSelect->addItem(QString());
-        cmbSelect->setObjectName(QString::fromUtf8("cmbSelect"));
-        cmbSelect->setGeometry(QRect(90, 20, 81, 22));
-        label_3 = new QLabel(groupBox_2);
-        label_3->setObjectName(QString::fromUtf8("label_3"));
-        label_3->setGeometry(QRect(20, 20, 53, 16));
-        btnSelect = new QPushButton(groupBox_2);
-        btnSelect->setObjectName(QString::fromUtf8("btnSelect"));
-        btnSelect->setGeometry(QRect(10, 60, 171, 24));
         groupBox_3 = new QGroupBox(groupBox_2);
         groupBox_3->setObjectName(QString::fromUtf8("groupBox_3"));
-        groupBox_3->setGeometry(QRect(210, 10, 191, 131));
+        groupBox_3->setGeometry(QRect(210, 20, 191, 161));
         label_4 = new QLabel(groupBox_3);
         label_4->setObjectName(QString::fromUtf8("label_4"));
         label_4->setGeometry(QRect(20, 30, 53, 16));
@@ -110,9 +97,30 @@ public:
         editMusicName->setObjectName(QString::fromUtf8("editMusicName"));
         editMusicName->setEnabled(false);
         editMusicName->setGeometry(QRect(60, 70, 113, 21));
-        btnReadPlay = new QPushButton(groupBox_2);
-        btnReadPlay->setObjectName(QString::fromUtf8("btnReadPlay"));
-        btnReadPlay->setGeometry(QRect(150, 160, 75, 24));
+        spbDelay = new QSpinBox(groupBox_3);
+        spbDelay->setObjectName(QString::fromUtf8("spbDelay"));
+        spbDelay->setGeometry(QRect(110, 110, 71, 22));
+        spbDelay->setMaximum(20000);
+        label_2 = new QLabel(groupBox_3);
+        label_2->setObjectName(QString::fromUtf8("label_2"));
+        label_2->setGeometry(QRect(10, 110, 91, 16));
+        groupBox_4 = new QGroupBox(groupBox_2);
+        groupBox_4->setObjectName(QString::fromUtf8("groupBox_4"));
+        groupBox_4->setGeometry(QRect(10, 20, 191, 161));
+        label_3 = new QLabel(groupBox_4);
+        label_3->setObjectName(QString::fromUtf8("label_3"));
+        label_3->setGeometry(QRect(20, 30, 53, 16));
+        cmbSelect = new QComboBox(groupBox_4);
+        cmbSelect->addItem(QString());
+        cmbSelect->addItem(QString());
+        cmbSelect->setObjectName(QString::fromUtf8("cmbSelect"));
+        cmbSelect->setGeometry(QRect(90, 30, 81, 22));
+        btnLoadSheet = new QPushButton(groupBox_4);
+        btnLoadSheet->setObjectName(QString::fromUtf8("btnLoadSheet"));
+        btnLoadSheet->setGeometry(QRect(20, 120, 141, 24));
+        btnSelect = new QPushButton(groupBox_4);
+        btnSelect->setObjectName(QString::fromUtf8("btnSelect"));
+        btnSelect->setGeometry(QRect(20, 80, 141, 24));
 
         verticalLayout->addWidget(groupBox_2);
 
@@ -174,6 +182,8 @@ public:
         menubar->addAction(menu_help->menuAction());
         menu_file->addAction(actionOpen);
         menu_help->addAction(actionAbout);
+        menu_help->addSeparator();
+        menu_help->addAction(actionHelp);
 
         retranslateUi(MainWindow);
 
@@ -183,33 +193,23 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "\345\216\237\347\245\236Music", nullptr));
-        actionOpen->setText(QCoreApplication::translate("MainWindow",
-                                                        "\344\273\216\346\226\207\344\273\266\344\270\255\351\200\211\346\213\251",
-                                                        nullptr));
+        actionOpen->setText(QCoreApplication::translate("MainWindow", "\344\273\216\346\226\207\344\273\266\344\270\255\351\200\211\346\213\251", nullptr));
         actionAbout->setText(QCoreApplication::translate("MainWindow", "\345\205\263\344\272\216", nullptr));
-        groupBox_2->setTitle(QCoreApplication::translate("MainWindow", "\345\274\271\345\245\217", nullptr));
-        label_2->setText(QCoreApplication::translate("MainWindow",
-                                                     "\345\237\272\347\241\200\345\273\266\346\227\266(ms)\357\274\232",
-                                                     nullptr));
-        cmbSelect->setItemText(0, QCoreApplication::translate("MainWindow", "test", nullptr));
-
-        label_3->setText(
-                QCoreApplication::translate("MainWindow", "\351\200\211\346\213\251\344\271\220\350\260\261", nullptr));
-        btnSelect->setText(QCoreApplication::translate("MainWindow",
-                                                       "\344\273\216\346\226\207\344\273\266\344\270\255\351\200\211\346\213\251",
-                                                       nullptr));
-        groupBox_3->setTitle(
-                QCoreApplication::translate("MainWindow", "\344\271\220\350\260\261\344\277\241\346\201\257", nullptr));
+        actionHelp->setText(QCoreApplication::translate("MainWindow", "\344\275\277\347\224\250\345\270\256\345\212\251", nullptr));
+        groupBox_2->setTitle(QCoreApplication::translate("MainWindow", "\347\220\264\350\260\261", nullptr));
+        groupBox_3->setTitle(QCoreApplication::translate("MainWindow", "\347\220\264\350\260\261\344\277\241\346\201\257", nullptr));
         label_4->setText(QCoreApplication::translate("MainWindow", "\344\275\234\350\200\205", nullptr));
         label_5->setText(QCoreApplication::translate("MainWindow", "\346\233\262\345\220\215\357\274\232", nullptr));
-        btnReadPlay->setText(
-                QCoreApplication::translate("MainWindow", "\344\277\235\345\255\230\350\256\276\347\275\256", nullptr));
-        groupBox->setTitle(QCoreApplication::translate("MainWindow",
-                                                       "\345\256\217\346\214\211\351\224\256\350\256\276\347\275\256",
-                                                       nullptr));
-        btnResetHotkey->setText(QCoreApplication::translate("MainWindow",
-                                                            "\351\207\215\350\256\276\345\256\217\346\214\211\351\224\256",
-                                                            nullptr));
+        label_2->setText(QCoreApplication::translate("MainWindow", "\345\237\272\347\241\200\345\273\266\346\227\266(ms)\357\274\232", nullptr));
+        groupBox_4->setTitle(QCoreApplication::translate("MainWindow", "\351\200\211\346\213\251", nullptr));
+        label_3->setText(QCoreApplication::translate("MainWindow", "\351\200\211\346\213\251\344\271\220\350\260\261", nullptr));
+        cmbSelect->setItemText(0, QCoreApplication::translate("MainWindow", "1", nullptr));
+        cmbSelect->setItemText(1, QCoreApplication::translate("MainWindow", "2", nullptr));
+
+        btnLoadSheet->setText(QCoreApplication::translate("MainWindow", "\350\275\275\345\205\245\347\220\264\350\260\261", nullptr));
+        btnSelect->setText(QCoreApplication::translate("MainWindow", "\344\273\216\346\226\207\344\273\266\344\270\255\351\200\211\346\213\251", nullptr));
+        groupBox->setTitle(QCoreApplication::translate("MainWindow", "\345\256\217\346\214\211\351\224\256\350\256\276\347\275\256", nullptr));
+        btnResetHotkey->setText(QCoreApplication::translate("MainWindow", "\351\207\215\350\256\276\345\256\217\346\214\211\351\224\256", nullptr));
         cmbHot1->setItemText(0, QCoreApplication::translate("MainWindow", "\347\251\272", nullptr));
         cmbHot1->setItemText(1, QCoreApplication::translate("MainWindow", "Ctrl", nullptr));
         cmbHot1->setItemText(2, QCoreApplication::translate("MainWindow", "ALT", nullptr));
@@ -228,11 +228,8 @@ public:
 
 };
 
-namespace Ui
-{
-    class MainWindow : public Ui_MainWindow
-    {
-    };
+namespace Ui {
+    class MainWindow: public Ui_MainWindow {};
 } // namespace Ui
 
 QT_END_NAMESPACE
