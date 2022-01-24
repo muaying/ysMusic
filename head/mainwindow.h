@@ -5,7 +5,7 @@
 #include <qhotkey.h>
 #include <QThread>
 #include "Player.h"
-
+#include "helpwindow.h"
 namespace Ui
 {
     class MainWindow;
@@ -22,13 +22,13 @@ public:
 
 private slots:
 	void resetHotKey();
-
+	void readPlay();
+	void about();
     signals:
-            void doPlay(QList <std::pair<QString, int>> music,int delay);
+            void doPlay(QList <std::pair<QString, int>> music);
 
 private:
-	void readPlay();
-	bool loadSheet(QString filename);
+	QList <std::pair<QString, int>> loadSheet(QString filename);
 private:
     Ui::MainWindow *ui;
     QHotkey *qHotkey;
@@ -38,7 +38,7 @@ private:
     QString fileName;
     //琴谱
 	QList <std::pair<QString, int>> musics;
-
+	HelpWindow* helpWindow;
 };
 
 #endif // MAINWINDOW_H

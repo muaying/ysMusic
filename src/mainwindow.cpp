@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //初始化 ui
     setWindowIcon(QIcon(":/res/imgs/miao.png"));
     ui->setupUi(this);
+	helpWindow=new HelpWindow(this);
     //注册热键
     qHotkey = new QHotkey(QKeySequence("F6"), false, this);
     if (!qHotkey->setRegistered(true))
@@ -29,7 +30,8 @@ MainWindow::MainWindow(QWidget *parent) :
     thread = new QThread(this);
     player.moveToThread(thread);
     thread->start();
-	loadSheet(":/res/sheet/1.txt");
+	fileName=":/res/sheet/1.txt";
+	loadSheet(fileName);
     //槽函数绑定
     //重设热键
 	connect(ui->btnResetHotkey, &QPushButton::clicked, this, &MainWindow::resetHotKey);
@@ -41,6 +43,13 @@ MainWindow::MainWindow(QWidget *parent) :
 	//选择 自定义琴谱
 	connect(ui->btnSelect,&QPushButton::clicked,this,[this]()
 	{
+		QString  t= QFileDialog::getOpenFileName(this,"选择乐谱","./", tr("乐谱文件 (*.txt)"));
+		if(!t.isEmpty())
+		{
+			fileName=t;
+		}
+	});
+	connect(ui->actionOpen,&QAction::triggered,this,[this](){
 		QString  t= QFileDialog::getOpenFileName(this,"选择乐谱","./", tr("乐谱文件 (*.txt)"));
 		if(!t.isEmpty())
 		{
@@ -60,13 +69,17 @@ MainWindow::MainWindow(QWidget *parent) :
             } else
             {
                 player.setPlayFlag(true);
-                emit doPlay(musics, ui->spbDelay->value());
+                emit doPlay(musics);
             }
         }
 		else
 			QMessageBox::information(this, "提示", "尚未载入琴谱，请选择琴谱后再次按下热键");
     });
 	connect(this, &MainWindow::doPlay, &player, &Player::play);
+	connect(ui->actionAbout,&QAction::triggered,this,&MainWindow::about);
+	connect(ui->actionHelp,&QAction::triggered,this,[this](){
+		helpWindow->show();
+	});
 }
 
 void MainWindow::resetHotKey()
@@ -100,18 +113,20 @@ MainWindow::~MainWindow()
 
 void MainWindow::readPlay()
 {
-	if(loadSheet(fileName))
-		QMessageBox::information(this, "提示", "载入成功,请在原神中使用[琴],再按下热键[" + qHotkey->shortcut().toString() + "] 弹琴,\n再次按下停止演奏");
-	else
+	auto res= loadSheet(fileName);
+	if(!res.isEmpty())
 	{
-		QMessageBox::information(this, "提示", "载入失败,请查看帮助以及检查琴谱格式,以及琴谱文件是否存在");
-		musics.clear();
+		musics=res;
+		QMessageBox::information(this, "提示", "载入成功,请在原神中使用[琴],再按下热键[" + qHotkey->shortcut().toString() + "] 弹琴,\n再次按下停止演奏");
 	}
+	else
+		QMessageBox::information(this, "提示", "载入失败,请查看帮助以及检查琴谱格式,以及琴谱文件是否存在");
 }
 
 //载入并解析琴谱
-bool MainWindow::loadSheet(QString filename)
+QList <std::pair<QString, int>> MainWindow::loadSheet(QString filename)
 {
+	QList <std::pair<QString, int>> res;
 	QFile qFile(filename);
 	if (!qFile.open(QFile::ReadOnly))
 	{
@@ -125,6 +140,7 @@ bool MainWindow::loadSheet(QString filename)
 			//获取 作者 曲名 以及  曲谱 去除所有空格行号 以及文件 结束标志
 			QString sheet;
 			QByteArray buf;
+			int delay=100;
 			for (auto it = data.cbegin(); it < data.cend(); ++it)
 			{
 				if (*it == ' ' || *it == '\n' || *it == '\r')
@@ -149,17 +165,18 @@ bool MainWindow::loadSheet(QString filename)
 						bool ok;
 						int val = tmp.toInt(&ok);
 						if (ok)
-							this->ui->spbDelay->setValue(val);
+							delay=val;
 					} else if (buf == "sheet")
 						sheet = tmp;
 					buf.clear();
 				} else
 					buf.append(*it);
 			}
+
+			ui->editDelay->setText(QString::number(delay)+" ms");
 			//解析琴谱  无视大小写
 			if (!sheet.isEmpty())
 			{
-				musics.clear();
 				sheet=sheet.toUpper();
 				for(int i=0;i<sheet.size();++i)
 				{
@@ -189,13 +206,13 @@ bool MainWindow::loadSheet(QString filename)
 							d=d*10+sheet[i].digitValue();
 						}
 					}else
-						;//其他字符过滤掉
+						continue;//其他字符过滤掉
 					if(!m.isEmpty())
 					{
 						if(d==0)
-							d=1;
+							d=delay;
 						std::pair<QString,int> p= std::make_pair(m,d);
-						musics.append(p);
+						res.append(p);
 					}
 				}
 			}
@@ -203,10 +220,16 @@ bool MainWindow::loadSheet(QString filename)
 		catch (std::exception e)
 		{
 			QMessageBox::warning(this, "错误", "无法解析该琴谱,请检查格式");
-			return false;
 		}
-		return true;
 	}
-	return false;
+	return  res;
 }
 
+void MainWindow::about()
+{
+	QMessageBox::about(this,"关于",
+					   R"(作者：越行勤
+程序简介：原神简易弹琴助手
+博客：blog.yxqin.top
+项目地址：https://gitee.com/)");
+}

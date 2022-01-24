@@ -15,7 +15,7 @@ bool Player::isPlaying() {
     return playing;
 }
 
-void Player::play(QList <std::pair<QString, int>> musics, int delay)
+void Player::play(QList <std::pair<QString, int>> musics)
 {
 	playing=true;
 	//qDebug()<<"正在弹奏";
@@ -25,7 +25,7 @@ void Player::play(QList <std::pair<QString, int>> musics, int delay)
 		//qDebug()<<"按键"<<m->first;
 		//qDebug()<<"延时"<<m->second;
 		playKey(m->first);
-		QThread::msleep(delay*m->second);
+		QThread::msleep(m->second);
 		++m;
 	}
 	//qDebug()<<"弹奏完成";

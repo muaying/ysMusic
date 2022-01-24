@@ -21,7 +21,6 @@
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
@@ -42,8 +41,8 @@ public:
     QLabel *label_5;
     QLineEdit *editAuthor;
     QLineEdit *editMusicName;
-    QSpinBox *spbDelay;
-    QLabel *label_2;
+    QLabel *label_6;
+    QLineEdit *editDelay;
     QGroupBox *groupBox_4;
     QLabel *label_3;
     QComboBox *cmbSelect;
@@ -91,19 +90,22 @@ public:
         label_5->setGeometry(QRect(20, 70, 53, 16));
         editAuthor = new QLineEdit(groupBox_3);
         editAuthor->setObjectName(QString::fromUtf8("editAuthor"));
-        editAuthor->setEnabled(false);
+        editAuthor->setEnabled(true);
         editAuthor->setGeometry(QRect(60, 30, 113, 21));
+        editAuthor->setReadOnly(true);
         editMusicName = new QLineEdit(groupBox_3);
         editMusicName->setObjectName(QString::fromUtf8("editMusicName"));
-        editMusicName->setEnabled(false);
+        editMusicName->setEnabled(true);
         editMusicName->setGeometry(QRect(60, 70, 113, 21));
-        spbDelay = new QSpinBox(groupBox_3);
-        spbDelay->setObjectName(QString::fromUtf8("spbDelay"));
-        spbDelay->setGeometry(QRect(110, 110, 71, 22));
-        spbDelay->setMaximum(20000);
-        label_2 = new QLabel(groupBox_3);
-        label_2->setObjectName(QString::fromUtf8("label_2"));
-        label_2->setGeometry(QRect(10, 110, 91, 16));
+        editMusicName->setReadOnly(true);
+        label_6 = new QLabel(groupBox_3);
+        label_6->setObjectName(QString::fromUtf8("label_6"));
+        label_6->setGeometry(QRect(20, 110, 53, 16));
+        editDelay = new QLineEdit(groupBox_3);
+        editDelay->setObjectName(QString::fromUtf8("editDelay"));
+        editDelay->setEnabled(true);
+        editDelay->setGeometry(QRect(60, 110, 113, 21));
+        editDelay->setReadOnly(true);
         groupBox_4 = new QGroupBox(groupBox_2);
         groupBox_4->setObjectName(QString::fromUtf8("groupBox_4"));
         groupBox_4->setGeometry(QRect(10, 20, 191, 161));
@@ -200,7 +202,7 @@ public:
         groupBox_3->setTitle(QCoreApplication::translate("MainWindow", "\347\220\264\350\260\261\344\277\241\346\201\257", nullptr));
         label_4->setText(QCoreApplication::translate("MainWindow", "\344\275\234\350\200\205", nullptr));
         label_5->setText(QCoreApplication::translate("MainWindow", "\346\233\262\345\220\215\357\274\232", nullptr));
-        label_2->setText(QCoreApplication::translate("MainWindow", "\345\237\272\347\241\200\345\273\266\346\227\266(ms)\357\274\232", nullptr));
+        label_6->setText(QCoreApplication::translate("MainWindow", "\345\273\266\346\227\266\357\274\232", nullptr));
         groupBox_4->setTitle(QCoreApplication::translate("MainWindow", "\351\200\211\346\213\251", nullptr));
         label_3->setText(QCoreApplication::translate("MainWindow", "\351\200\211\346\213\251\344\271\220\350\260\261", nullptr));
         cmbSelect->setItemText(0, QCoreApplication::translate("MainWindow", "1", nullptr));

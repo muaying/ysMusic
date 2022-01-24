@@ -17,7 +17,7 @@ public:
 
 public
     slots:
-            void play(QList<std::pair<QString,int>> musics,int delay);
+            void play(QList<std::pair<QString,int>> musics);
 
     void setPlayFlag(bool flag);
 
