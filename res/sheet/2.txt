@@ -1,4 +1,4 @@
-author: yxqin,
+author: 网络,
 musicName:黑人抬棺,
 delay: 400,
 sheet:

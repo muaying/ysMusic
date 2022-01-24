@@ -1,5 +1,5 @@
-author: yxqin,
-musicName:测试,
+author: 网络,
+musicName:穿越时空的思念,
 delay: 400,
 sheet:
 DG(VNAH)950HQ(BMSW)950
