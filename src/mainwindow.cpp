@@ -164,7 +164,7 @@ bool MainWindow::loadSheet(QString filename)
 				for(int i=0;i<sheet.size();++i)
 				{
 					QString m;//按键
-					int d=1;//延时
+					int d=0;//延时
 					if(sheet[i]=='(') //存在和弦
 					{
 						//找按键
@@ -173,24 +173,27 @@ bool MainWindow::loadSheet(QString filename)
 							if('A'<=sheet[i]&&sheet[i]<='Z')
 								m.append(sheet[i]);
 						}
-						++i;
-						if( i<sheet.size()&&sheet[i]>='1'&&sheet[i]<='9')
-							d=QString(sheet[i]).toInt();
-						else
-							--i;
+						//确定延时  这里只考虑整数
+						while(i+1<sheet.size()&&sheet[i+1].isDigit())
+						{
+							++i;
+							d=d*10+sheet[i].digitValue();
+						}
 					}else  if('A'<=sheet[i]&&sheet[i]<='Z') //没有和弦
 					{
 						m.append(sheet[i]);
 						//确定延时
-						++i;
-						if( i<sheet.size()&&sheet[i]>='1'&&sheet[i]<='9')
-							d=QString(sheet[i]).toInt();
-						else
-							--i;
+						while(i+1<sheet.size()&&sheet[i+1].isDigit())
+						{
+							++i;
+							d=d*10+sheet[i].digitValue();
+						}
 					}else
-						;
+						;//其他字符过滤掉
 					if(!m.isEmpty())
 					{
+						if(d==0)
+							d=1;
 						std::pair<QString,int> p= std::make_pair(m,d);
 						musics.append(p);
 					}
