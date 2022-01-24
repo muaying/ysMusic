@@ -23,12 +23,14 @@ PS: 程序启动自动载入了琴谱1，按下热键可以开始弹奏；载入
 
 
 ## 示例琴谱文件
-
+```txl
 author : 作者名 ,
 musicName : 曲名 ,
 delay:延时,
 sheet :
 F6 (FA)6
+```
+完整见 /res/sheet 下
 
 author,musicName,delay 不是必须的,但是sheet是必须的。
 PS:
