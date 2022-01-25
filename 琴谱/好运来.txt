@@ -1,0 +1,24 @@
+author: yxqin,
+musicName:好运来,
+delay: 310,
+sheet:
+
+H280HQQ250H350H500GDGQH400
+HQ  QQ250Q  HGHGS350GD500     
+D280D   S320   A320  D320  S500
+D   H   G   D   H   G500
+H   Q  Q   H   W  W W  Q  H    GQ350H800
+H280HQQ250H350H500GDGQH400
+HQ  QQ250Q  HGHGS350GD500     
+D280D   S320   A320  D320  S500
+D   H   G   D   H   G500
+H   Q  Q   H   W  W W  Q  H    GQ350H800
+
+H   E  W  W    Q   H   G  Q   W   H500    
+H    W   Q    H   G   S   G   H   D500     
+D   H  G280H    H  G280  H    W280  Q  W500     
+Q280Q280Q  W  E280   E  W  Q  G  Q  H  H500
+HQ  QQ250Q  HGHGS350GD500     
+D280D   S320   A320  D320  S500
+D   H   G   D   H   G500
+H   Q  Q   H   W  W W  Q  H    GQ350H800
