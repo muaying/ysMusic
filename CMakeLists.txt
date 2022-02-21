@@ -23,7 +23,7 @@ qt6_add_resources(QRC Resources.qrc)
 # 头文件目录
 include_directories(head)
 include_directories(ui)
-add_executable(${PROJECT_NAME}
+add_executable(${PROJECT_NAME} WIN32
         ${UI} ${QRC}
         ${SRC} ${HEAD} icon.rc)
 target_link_libraries(${PROJECT_NAME}

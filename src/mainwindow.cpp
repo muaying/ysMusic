@@ -15,54 +15,82 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::init()
 {
-	helpWindow=new HelpWindow(this);
+	m_pHelpWindow=new HelpWindow(this);
 	//线程创建
-	thread=new QThread(this);
-	thread->start();
-	player.moveToThread(thread);
+	m_pThread=new QThread(this);
+	m_pThread->start();
+	m_player.moveToThread(m_pThread);
 	//设置表格
-	ui->tableView->setModel(&this->musicList);
+	ui->tableView->setModel(&this->m_musicList);
 	ui->tableView->horizontalHeader()->setDefaultAlignment(Qt::AlignHCenter);
 	ui->tableView->setAlternatingRowColors(true);
 	ui->tableView->horizontalHeader()->setStretchLastSection(true);
 	ui->tableView->setContextMenuPolicy(Qt::CustomContextMenu);
 	//右键删除琴谱功能
-	tableMenu=new QMenu(ui->tableView);
-	tableDelte =new QAction(tableMenu);
-	tableDelte->setText("删除");
-	tableMenu->addAction(tableDelte);
+	m_pTableMenu=new QMenu(ui->tableView);
+	m_pTableDelete =new QAction(m_pTableMenu);
+	m_pTableDelete->setText("删除");
+	m_pTableMenu->addAction(m_pTableDelete);
 	ui->tableView->selectRow(0);
 	//注册热键
-	qHotkey = new QHotkey(QKeySequence("F6"), false, this);
-	if (!qHotkey->setRegistered(true))
+	m_pHotkey1 = new QHotkey(QKeySequence("F6"), false, this);
+	m_pHotkey2= new QHotkey(QKeySequence("ctrl+F6"), false, this);
+	if (!m_pHotkey1->setRegistered(true)or!m_pHotkey2->setRegistered(true))
 	{
-		QMessageBox::warning(this, "提示", "检测到热键冲突，请重新设置热键");
-		ui->cmbHot1->setCurrentText("空");
-		ui->cmbHot2->setCurrentText("空");
-	} else
-	{
-		ui->cmbHot1->setCurrentText("空");
-		ui->cmbHot2->setCurrentText("F6");
-	}
+		QMessageBox::warning(this, "提示", "检测到热键冲突，请手动设置热键");
+		m_pHotkey2->setRegistered(false);
+		m_pHotkey1->setRegistered(false);
+	}else
+		ui->cmbHot1->setCurrentIndex(1);
 	connect(ui->btnResetHotkey,&QPushButton::clicked,this,&MainWindow::resetHotKey);
 	//槽函数绑定
-	connect(this,&MainWindow::doPlay,&this->player,&Player::play);
+	connect(this,&MainWindow::doPlay,&this->m_player,&Player::play);
 
-	connect(this->qHotkey,&QHotkey::activated,[this]()
+	//播放与暂停
+	connect(this->m_pHotkey1,&QHotkey::activated,[this]()
 	{
-		if(!player.isPlaying())
-		{
-			player.setPause(false);
-			player.setFlag(true);
-			int nCur=ui->tableView->selectionModel()->currentIndex().row();
-			emit doPlay(musicList.getSheet(nCur));
-		}else
-			player.setFlag(false);
-	});
 
+		if(!m_player.isPlaying())//还没有在播放状态 播放
+		{
+			m_player.setPause(false);
+			m_player.setFlag(true);
+			emit doPlay(m_musicList.getSheet(ui->tableView->selectionModel()->currentIndex().row()));
+		}
+		else
+		{
+			//控制暂停
+			if(!m_player.isPause())
+				m_player.setPause(true);
+			else
+				m_player.setPause(false);
+		}
+
+	});
+	//结束播放
+	connect(this->m_pHotkey2,&QHotkey::activated,[this](){
+		if(m_player.isPlaying())
+		{
+			m_player.setFlag(false);
+			QThread::msleep(10);
+		}
+	});
 	connect(ui->actionAbout,&QAction::triggered,this,&MainWindow::about);
+	connect(ui->checkBoxTopWindow,&QCheckBox::stateChanged,this,[this](int flag){
+		if(flag==2)
+			//窗口置顶
+		{
+			this->setWindowFlags(this->windowFlags() | Qt::WindowStaysOnTopHint);
+			this->show();
+		}
+		else if(flag==0)
+			//取消置顶
+		{
+			this->setWindowFlags( this->windowFlags() & ~Qt::WindowStaysOnTopHint);
+			this->show();
+		}
+	});
 	connect(ui->actionHelp,&QAction::triggered,this,[this](){
-		helpWindow->show();
+		m_pHelpWindow->show();
 	});
 	connect(ui->btnLoad,&QPushButton::clicked,this,[this](){
 		QString filename=QFileDialog::getOpenFileName(this,"选择文件","./","琴谱文件(*.txt)");
@@ -74,7 +102,8 @@ void MainWindow::init()
 				QMessageBox::warning(this, "错误", "载入失败，原因："+status);
 			else
 			{
-				musicList.addMusic(*m);
+				if(!m_musicList.addMusic(*m))
+					QMessageBox::warning(this, "提示", "当前歌曲已存在");
 				delete m;
 			}
 		}
@@ -84,7 +113,8 @@ void MainWindow::init()
 		Music* pMusic=Music::createMusic(":/res/sheet/1.txt",status);
 		if(pMusic!= nullptr)
 		{
-			musicList.addMusic(*pMusic);
+			if(!m_musicList.addMusic(*pMusic))
+				QMessageBox::warning(this, "提示", "当前歌曲已存在");
 			delete pMusic;
 		}else
 			QMessageBox::warning(this, "错误", "载入失败，原因："+status);
@@ -95,14 +125,14 @@ void MainWindow::init()
 		QModelIndex index = ui->tableView->indexAt(point);
 		if(index.isValid()&&index.row()>1)
 		{
-			tableMenu->exec(QCursor::pos());
+			m_pTableMenu->exec(QCursor::pos());
 		}
 	});
 	//删除功能
-	connect(tableDelte,&QAction::triggered,this,[this](){
+	connect(m_pTableDelete,&QAction::triggered,this,[this](){
 		QModelIndex index = ui->tableView->currentIndex();
 		if(index.isValid())
-			musicList.deleteMusic(index.row());
+			m_musicList.deleteMusic(index.row());
 	});
 }
 
@@ -110,29 +140,33 @@ void MainWindow::init()
 
 void MainWindow::resetHotKey()
 {
-    QString hot1 = ui->cmbHot1->currentText();
-    QString hot2 = ui->cmbHot2->currentText();
-    qHotkey->setRegistered(false);
-    if (hot2 == "空" && hot1 == "空")
+    QString key = ui->cmbHot1->currentText();
+    m_pHotkey1->setRegistered(false);
+	m_pHotkey2->setRegistered(false);
+    if (key == "空")
         QMessageBox::warning(this, "警告", "请选择合适的热键");
-    if (hot1 == "空")
-        qHotkey->setShortcut(QKeySequence(hot2), false);
-    else
-        qHotkey->setShortcut(QKeySequence(hot1 + '+' + hot2), false);
-    if (qHotkey->setRegistered(true))
-        QMessageBox::information(this, "提示", "重设热键成功");
-    else
-    {
-        QMessageBox::warning(this, "提示", "检测到热键冲突，请重新设置热键");
-        ui->cmbHot1->setCurrentText("空");
-        ui->cmbHot2->setCurrentText("空");
-    }
+	else
+	{
+		m_pHotkey1 = new QHotkey(QKeySequence(key), false, this);
+		m_pHotkey2= new QHotkey(QKeySequence("ctrl+"+key), false, this);
+
+		if (m_pHotkey1->setRegistered(true)&&m_pHotkey2->setRegistered(true))
+			QMessageBox::information(this, "提示", "重设热键成功");
+		else
+		{
+			QMessageBox::warning(this, "提示", "检测到热键冲突，请重新设置热键");
+			ui->cmbHot1->setCurrentText("空");
+			m_pHotkey1->setRegistered(false);
+			m_pHotkey2->setRegistered(false);
+		}
+	}
 }
 
 MainWindow::~MainWindow()
 {
-    thread->quit();
-    thread->wait();
+	m_player.setFlag(false);
+    m_pThread->quit();
+	m_pThread->wait();
     delete ui;
 }
 

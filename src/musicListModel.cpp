@@ -80,12 +80,21 @@ QVariant musicListModel::data(const QModelIndex &index, int role) const
 	return QVariant();
 }
 
-void musicListModel::addMusic(Music &m)
+bool musicListModel::addMusic(Music &m)
 {
+	//不添加歌曲名字一样的 乐谱
+	auto  it= m_musicList.begin();
+	while(it<m_musicList.end()&&it->getName()!=m.getName())
+		++it;
+	if(it<m_musicList.end())
+		return false;
+
+
 	int nCount = rowCount();
 	beginInsertRows(QModelIndex(), nCount,nCount);
 	m_musicList.push_back(m);
 	endInsertRows();
+	return true;
 }
 
 void musicListModel::deleteMusic(int row)

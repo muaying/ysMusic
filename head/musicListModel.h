@@ -20,7 +20,7 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
 
-	void addMusic(Music& m);
+	bool addMusic(Music& m);
 	void deleteMusic(int row);
 	QList<std::pair<QString,int>>& getSheet(int row);
 private:

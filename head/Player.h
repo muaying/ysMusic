@@ -22,9 +22,10 @@ public:
     Player(QObject *parent = nullptr);
 
 	//是否弹奏完成
-    bool isPlaying();
+    bool isPlaying()const;
 	//控制暂停  true暂停 false 继续播放
 	void setPause(bool pause);
+	bool isPause()const;
 	//控制 弹奏状态 true： 运行弹奏  false：无法弹奏 并且让 正在弹奏的格局结束弹奏
 	void setFlag(bool flag);
 public

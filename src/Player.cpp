@@ -13,7 +13,7 @@ Player::Player(QObject *parent) : QObject(parent) {
 	pause=false;
 }
 
-bool Player::isPlaying() {
+bool Player::isPlaying()const {
     return playing;
 }
 
@@ -26,9 +26,9 @@ void Player::play(QList <std::pair<QString, int>>& musics)
 	{
 		if(pause==false)
 		{
-			qDebug()<<"按键"<<m->first;
-			qDebug()<<"延时"<<m->second;
-			//playKey(m->first);
+//			qDebug()<<"按键"<<m->first;
+//			qDebug()<<"延时"<<m->second;
+			playKey(m->first);
 			QThread::msleep(m->second);
 			++m;
 		}else
@@ -48,3 +48,5 @@ void Player::playKey(QString keys)
 }
 void Player::setFlag(bool flag) {this->flag = flag;}
 void Player::setPause(bool pause) { this->pause=pause;}
+
+bool Player::isPause() const {return pause;}

@@ -33,13 +33,14 @@ private:
 	void init();
 private:
     Ui::MainWindow *ui;
-    QHotkey *qHotkey;
-    Player player;
-    QThread *thread;
-	musicListModel musicList;
-	HelpWindow* helpWindow;
-	QMenu* tableMenu;
-	QAction* tableDelte;
+    QHotkey *m_pHotkey1;//热键1 开始和停止
+	QHotkey *m_pHotkey2;//热键2 暂停
+    Player m_player;
+    QThread *m_pThread;
+	musicListModel m_musicList;
+	HelpWindow* m_pHelpWindow;
+	QMenu* m_pTableMenu;//tableView 右键菜单
+	QAction* m_pTableDelete;//tableView 删除功能键
 };
 
 #endif // MAINWINDOW_H
