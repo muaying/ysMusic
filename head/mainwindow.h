@@ -6,6 +6,8 @@
 #include <QThread>
 #include "Player.h"
 #include "helpwindow.h"
+#include "musicListModel.h"
+#include <QMenu>
 namespace Ui
 {
     class MainWindow;
@@ -22,23 +24,22 @@ public:
 
 private slots:
 	void resetHotKey();
-	void readPlay();
 	void about();
     signals:
-            void doPlay(QList <std::pair<QString, int>> music);
+            void doPlay(QList <std::pair<QString, int>>& music);
 
 private:
-	QList <std::pair<QString, int>> loadSheet(QString filename);
+	//初始化工作 信号连接工作
+	void init();
 private:
     Ui::MainWindow *ui;
     QHotkey *qHotkey;
     Player player;
     QThread *thread;
-    //琴谱 文件名字
-    QString fileName;
-    //琴谱
-	QList <std::pair<QString, int>> musics;
+	musicListModel musicList;
 	HelpWindow* helpWindow;
+	QMenu* tableMenu;
+	QAction* tableDelte;
 };
 
 #endif // MAINWINDOW_H
