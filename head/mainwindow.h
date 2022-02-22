@@ -41,6 +41,7 @@ private:
 	HelpWindow* m_pHelpWindow;
 	QMenu* m_pTableMenu;//tableView 右键菜单
 	QAction* m_pTableDelete;//tableView 删除功能键
+	QAction* m_pMusicToFile;//导出为文件 按钮
 
 
 };

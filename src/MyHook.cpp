@@ -4,11 +4,11 @@
 
 #include "MyHook.h"
 #include <QDebug>
+#include <chrono>
 MyHook* MyHook::obj= MyHook::getMyHook();
 HHOOK MyHook::keyHook= nullptr;
-QSet<QString> MyHook::HotKeySet;
 
-MyHook::MyHook() {}
+MyHook::MyHook():flag(false) {}
 MyHook* MyHook::getMyHook()
 {
 	if(obj== nullptr)
@@ -33,15 +33,32 @@ void MyHook::uninstall()
 		delete obj;
 		obj= nullptr;
 	}
-	HotKeySet.clear();
 }
 
 void MyHook::handleKeyDown(unsigned int Virtual_Key)
 {
-	qDebug()<<"key enter:"<<QString::number(Virtual_Key,16);
 	emit KeyDownd(Virtual_Key);
+	if(flag==true&& Virtual_Key<='Z'&&Virtual_Key>='A')
+	{
+		using namespace std::chrono;
+		//获取当前时间毫秒数
+		int now=duration_cast<milliseconds>(steady_clock:: now().time_since_epoch()).count();
+		auto p=std::make_pair(Virtual_Key,now);
+		SheetBuffer.append(p);
+	}
 }
 
+void MyHook::beginRecording()
+{
+	flag=true;
+	SheetBuffer.clear();
+}
+
+const QList<std::pair<unsigned int, int>>& MyHook::endRecording()
+{
+	flag=false;
+	return SheetBuffer;
+}
 LRESULT MyHook::keyProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
 	if(wParam==WM_KEYDOWN)
@@ -87,9 +104,9 @@ bool MyHotKey::registerKey(QString key)
 				m_nKey1=VK_F1+n-1;
 		}
 		QString id=QString::number(m_nKey2)+QString::number(m_nKey1);
-		if(!MyHook::HotKeySet.contains(id))
+		if(!MyHook::getMyHook()->HotKeySet.contains(id))
 		{
-			MyHook::HotKeySet.insert(id);
+			MyHook::getMyHook()->HotKeySet.insert(id);
 			connect(MyHook::getMyHook(),&MyHook::KeyDownd,this,&MyHotKey::handle);
 			return true;
 		}
@@ -104,9 +121,9 @@ bool MyHotKey::registerKey(QString key)
 			m_nKey1=VK_F1+n-1;
 		m_nKey2=0;
 		QString id=QString::number(m_nKey2)+QString::number(m_nKey1);
-		if(!MyHook::HotKeySet.contains(id))
+		if(!MyHook::getMyHook()->HotKeySet.contains(id))
 		{
-			MyHook::HotKeySet.insert(id);
+			MyHook::getMyHook()->HotKeySet.insert(id);
 			connect(MyHook::getMyHook(),&MyHook::KeyDownd,this,&MyHotKey::handle);
 			return true;
 		}
@@ -118,7 +135,7 @@ bool MyHotKey::registerKey(QString key)
 void MyHotKey::unregisterKey()
 {
 	QString id=QString::number(m_nKey2)+QString::number(m_nKey1);
-	if(MyHook::HotKeySet.remove(id))
+	if(MyHook::getMyHook()->HotKeySet.remove(id))
 	{
 		disconnect(MyHook::getMyHook(),0,this,0);
 	}

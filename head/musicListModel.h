@@ -18,9 +18,9 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+	const Music& getMusic(int row)const;
 
-
-	bool addMusic(Music& m);
+	void addMusic(Music& m);
 	void deleteMusic(int row);
 	QList<std::pair<QString,int>>& getSheet(int row);
 private:

@@ -28,12 +28,18 @@ void MainWindow::init()
 	ui->tableView->setAlternatingRowColors(true);
 	ui->tableView->horizontalHeader()->setStretchLastSection(true);
 	ui->tableView->setContextMenuPolicy(Qt::CustomContextMenu);
-	//右键删除琴谱功能
+	ui->tableView->selectRow(0);
+	//右键琴谱功能
 	m_pTableMenu=new QMenu(ui->tableView);
 	m_pTableDelete =new QAction(m_pTableMenu);
+	m_pMusicToFile =new QAction(m_pTableMenu);
 	m_pTableDelete->setText("删除");
 	m_pTableMenu->addAction(m_pTableDelete);
-	ui->tableView->selectRow(0);
+	m_pMusicToFile->setText("导出");
+	m_pTableMenu->addAction(m_pMusicToFile);
+
+
+
 	//注册热键
 	if (m_Hotkey1.registerKey("F6")&&m_Hotkey2.registerKey("CTRL+F6"))
 	{
@@ -44,6 +50,7 @@ void MainWindow::init()
 		m_Hotkey1.unregisterKey();
 		m_Hotkey2.unregisterKey();
 	}
+	ui->checkBoxhasDelay->setCheckState(Qt::Checked);
 	connect(ui->btnResetHotkey,&QPushButton::clicked,this,&MainWindow::resetHotKey);
 	//槽函数绑定
 	connect(this,&MainWindow::doPlay,&this->m_player,&Player::play);
@@ -104,19 +111,34 @@ void MainWindow::init()
 				QMessageBox::warning(this, "错误", "载入失败，原因："+status);
 			else
 			{
-				if(!m_musicList.addMusic(*m))
-					QMessageBox::warning(this, "提示", "当前歌曲已存在");
+				m_musicList.addMusic(*m);
 				delete m;
 			}
 		}
 	});
-	connect(ui->btnTest,&QPushButton::clicked,this,[this](){
+	connect(ui->btnRecord,&QPushButton::clicked,this,[this](){
+		if(ui->btnRecord->text()=="开始录制")
+		{
+			ui->btnRecord->setText("结束录制");
+			MyHook::getMyHook()->beginRecording();
+		}
+		else
+		{
+			auto res=MyHook::getMyHook()->endRecording();
+			Music* m=Music::createMusic(ui->edtName->text(),ui->edtAuthor->text(),res);
+			if(m!= nullptr)
+			{
+				m_musicList.addMusic(*m);
+				delete m;
+			}
+			ui->btnRecord->setText("开始录制");
+		}
 	});
 
 	//表格右键菜单
 	connect(ui->tableView,&QTableView::customContextMenuRequested,this,[this](QPoint point){
 		QModelIndex index = ui->tableView->indexAt(point);
-		if(index.isValid()&&index.row()>1)
+		if(index.isValid())
 		{
 			m_pTableMenu->exec(QCursor::pos());
 		}
@@ -124,8 +146,26 @@ void MainWindow::init()
 	//删除功能
 	connect(m_pTableDelete,&QAction::triggered,this,[this](){
 		QModelIndex index = ui->tableView->currentIndex();
-		if(index.isValid())
+		if(index.isValid()&&index.row()>1)
 			m_musicList.deleteMusic(index.row());
+	});
+	//导出琴谱
+	connect(m_pMusicToFile,&QAction::triggered,this,[this](){
+		QModelIndex index = ui->tableView->currentIndex();
+		if(index.isValid())
+		{
+			QString dir=QFileDialog::getExistingDirectory(this,"选中保存路径","./");
+			dir=dir+'/'+m_musicList.getMusic(index.row()).getName()+".txt";
+			QFile file(dir);
+			if(file.open(QIODevice::WriteOnly|QIODevice::Text))
+			{
+				QTextStream stream(&file);
+				m_musicList.getMusic(index.row()).toFile(stream,ui->checkBoxhasDelay->checkState()==Qt::Checked);
+				file.close();
+			}else
+				QMessageBox::warning(this, "提示", "无法新建文件");
+
+		}
 	});
 }
 
@@ -141,7 +181,7 @@ void MainWindow::resetHotKey()
 	else
 	{
 
-		if (m_Hotkey1.registerKey("F6")&&m_Hotkey2.registerKey("CTRL+F6"))
+		if (m_Hotkey1.registerKey(key)&&m_Hotkey2.registerKey("CTRL+"+key))
 		{
 			QMessageBox::warning(this, "提示", "热键重设成功");
 		}
@@ -171,7 +211,7 @@ void MainWindow::about()
 	QMessageBox::about(this,"关于",
 					   R"(作者：越行勤
 程序简介：原神简易弹琴助手
-版本：1.2
+版本：1.5
 博客：blog.yxqin.top
 项目地址：https://gitee.com/yuexingqin/ysMusic)");
 }

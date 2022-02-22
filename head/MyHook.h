@@ -7,10 +7,16 @@
 #include <QObject>
 #include <windows.h>
 #include <QSet>
+
 class MyHotKey;//热键类
 
 
 //单例设计模式
+
+/*
+ * 功能：热键注册 录入琴谱
+ * 基于windows Hook 函数实现
+ * */
 class MyHook: public QObject{
 	Q_OBJECT
 	friend class MyHotKey;
@@ -19,16 +25,20 @@ public:
 	//注册 销毁 钩子
 	int install();
 	void uninstall();
-	//回调函数
-	void handleKeyDown(unsigned int Virtual_Key);
-	static LRESULT CALLBACK keyProc(int nCode,WPARAM wParam,LPARAM lParam);
+	void beginRecording();
+	const QList<std::pair<unsigned int,int>>& endRecording();
 	signals:
 	void KeyDownd(unsigned int Virtual_Key);
 private:
+	//回调函数
+	void handleKeyDown(unsigned int Virtual_Key);
+	static LRESULT CALLBACK keyProc(int nCode,WPARAM wParam,LPARAM lParam);
+	QList<std::pair<unsigned int,int>> SheetBuffer;//录制琴谱的缓冲区
+	QSet<QString> HotKeySet;//热键表
+	bool flag;//是否录制琴谱的开关
 	MyHook();
 	static MyHook* obj;
 	static HHOOK keyHook;
-	static QSet<QString> HotKeySet;//热键表
 };
 
 

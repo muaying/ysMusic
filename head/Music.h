@@ -4,15 +4,19 @@
 
 #ifndef YSMUSIC_MUSIC_H
 #define YSMUSIC_MUSIC_H
-
+#include <QTextStream>
 
 #include <QString>
 #include <QList>
+#include <QFile>
 
 class Music {
 public:
-	static Music* createMusic(QString filename,QString& status);//工厂函数
+	static Music*  createMusic(QString filename,QString& status);//工厂函数
+	static Music* createMusic(QString name,QString author,const QList<std::pair<unsigned int,int>>& sheet);
 	QList<std::pair<QString,int>>& getSheet();
+	void toFile(QTextStream& stream,bool hasDelay)const;
+
 	QString getName()const;
 	QString getAuthor()const;
 	QString toString()const;

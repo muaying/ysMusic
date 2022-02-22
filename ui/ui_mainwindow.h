@@ -17,11 +17,12 @@
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTableView>
 #include <QtWidgets/QVBoxLayout>
@@ -38,16 +39,24 @@ public:
     QWidget *centralwidget;
     QHBoxLayout *horizontalLayout_2;
     QGroupBox *groupBox_4;
-    QPushButton *btnTest;
+    QGroupBox *groupBox;
+    QPushButton *btnRecord;
     QWidget *layoutWidget;
+    QHBoxLayout *horizontalLayout_6;
+    QLabel *label;
+    QLineEdit *edtName;
+    QWidget *layoutWidget1;
+    QHBoxLayout *horizontalLayout_7;
+    QLabel *label_2;
+    QLineEdit *edtAuthor;
+    QWidget *widget;
     QVBoxLayout *verticalLayout;
-    QHBoxLayout *horizontalLayout_5;
-    QCheckBox *checkBoxTopWindow;
-    QPushButton *btnLoad;
-    QSpacerItem *verticalSpacer;
     QHBoxLayout *horizontalLayout_3;
-    QPushButton *btnResetHotkey;
+    QCheckBox *checkBoxTopWindow;
+    QCheckBox *checkBoxhasDelay;
+    QPushButton *btnLoad;
     QHBoxLayout *horizontalLayout_4;
+    QPushButton *btnResetHotkey;
     QComboBox *cmbHot1;
     QGroupBox *groupBox_3;
     QHBoxLayout *horizontalLayout;
@@ -78,45 +87,79 @@ public:
         groupBox_4->setObjectName(QString::fromUtf8("groupBox_4"));
         groupBox_4->setMinimumSize(QSize(200, 330));
         groupBox_4->setMaximumSize(QSize(16777215, 330));
-        btnTest = new QPushButton(groupBox_4);
-        btnTest->setObjectName(QString::fromUtf8("btnTest"));
-        btnTest->setGeometry(QRect(30, 230, 75, 24));
-        layoutWidget = new QWidget(groupBox_4);
+        groupBox = new QGroupBox(groupBox_4);
+        groupBox->setObjectName(QString::fromUtf8("groupBox"));
+        groupBox->setGeometry(QRect(10, 160, 201, 151));
+        btnRecord = new QPushButton(groupBox);
+        btnRecord->setObjectName(QString::fromUtf8("btnRecord"));
+        btnRecord->setGeometry(QRect(60, 110, 75, 24));
+        layoutWidget = new QWidget(groupBox);
         layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
-        layoutWidget->setGeometry(QRect(10, 40, 197, 66));
-        verticalLayout = new QVBoxLayout(layoutWidget);
+        layoutWidget->setGeometry(QRect(10, 30, 165, 23));
+        horizontalLayout_6 = new QHBoxLayout(layoutWidget);
+        horizontalLayout_6->setObjectName(QString::fromUtf8("horizontalLayout_6"));
+        horizontalLayout_6->setContentsMargins(0, 0, 0, 0);
+        label = new QLabel(layoutWidget);
+        label->setObjectName(QString::fromUtf8("label"));
+
+        horizontalLayout_6->addWidget(label);
+
+        edtName = new QLineEdit(layoutWidget);
+        edtName->setObjectName(QString::fromUtf8("edtName"));
+
+        horizontalLayout_6->addWidget(edtName);
+
+        layoutWidget1 = new QWidget(groupBox);
+        layoutWidget1->setObjectName(QString::fromUtf8("layoutWidget1"));
+        layoutWidget1->setGeometry(QRect(10, 70, 165, 23));
+        horizontalLayout_7 = new QHBoxLayout(layoutWidget1);
+        horizontalLayout_7->setObjectName(QString::fromUtf8("horizontalLayout_7"));
+        horizontalLayout_7->setContentsMargins(0, 0, 0, 0);
+        label_2 = new QLabel(layoutWidget1);
+        label_2->setObjectName(QString::fromUtf8("label_2"));
+
+        horizontalLayout_7->addWidget(label_2);
+
+        edtAuthor = new QLineEdit(layoutWidget1);
+        edtAuthor->setObjectName(QString::fromUtf8("edtAuthor"));
+
+        horizontalLayout_7->addWidget(edtAuthor);
+
+        widget = new QWidget(groupBox_4);
+        widget->setObjectName(QString::fromUtf8("widget"));
+        widget->setGeometry(QRect(20, 40, 188, 86));
+        verticalLayout = new QVBoxLayout(widget);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         verticalLayout->setContentsMargins(0, 0, 0, 0);
-        horizontalLayout_5 = new QHBoxLayout();
-        horizontalLayout_5->setObjectName(QString::fromUtf8("horizontalLayout_5"));
-        checkBoxTopWindow = new QCheckBox(layoutWidget);
-        checkBoxTopWindow->setObjectName(QString::fromUtf8("checkBoxTopWindow"));
-
-        horizontalLayout_5->addWidget(checkBoxTopWindow);
-
-        btnLoad = new QPushButton(layoutWidget);
-        btnLoad->setObjectName(QString::fromUtf8("btnLoad"));
-
-        horizontalLayout_5->addWidget(btnLoad);
-
-
-        verticalLayout->addLayout(horizontalLayout_5);
-
-        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-
-        verticalLayout->addItem(verticalSpacer);
-
         horizontalLayout_3 = new QHBoxLayout();
         horizontalLayout_3->setObjectName(QString::fromUtf8("horizontalLayout_3"));
-        btnResetHotkey = new QPushButton(layoutWidget);
-        btnResetHotkey->setObjectName(QString::fromUtf8("btnResetHotkey"));
-        btnResetHotkey->setMaximumSize(QSize(70, 25));
+        checkBoxTopWindow = new QCheckBox(widget);
+        checkBoxTopWindow->setObjectName(QString::fromUtf8("checkBoxTopWindow"));
 
-        horizontalLayout_3->addWidget(btnResetHotkey);
+        horizontalLayout_3->addWidget(checkBoxTopWindow);
+
+        checkBoxhasDelay = new QCheckBox(widget);
+        checkBoxhasDelay->setObjectName(QString::fromUtf8("checkBoxhasDelay"));
+
+        horizontalLayout_3->addWidget(checkBoxhasDelay);
+
+
+        verticalLayout->addLayout(horizontalLayout_3);
+
+        btnLoad = new QPushButton(widget);
+        btnLoad->setObjectName(QString::fromUtf8("btnLoad"));
+
+        verticalLayout->addWidget(btnLoad);
 
         horizontalLayout_4 = new QHBoxLayout();
         horizontalLayout_4->setObjectName(QString::fromUtf8("horizontalLayout_4"));
-        cmbHot1 = new QComboBox(layoutWidget);
+        btnResetHotkey = new QPushButton(widget);
+        btnResetHotkey->setObjectName(QString::fromUtf8("btnResetHotkey"));
+        btnResetHotkey->setMaximumSize(QSize(70, 25));
+
+        horizontalLayout_4->addWidget(btnResetHotkey);
+
+        cmbHot1 = new QComboBox(widget);
         cmbHot1->addItem(QString());
         cmbHot1->addItem(QString());
         cmbHot1->addItem(QString());
@@ -131,10 +174,7 @@ public:
         horizontalLayout_4->addWidget(cmbHot1);
 
 
-        horizontalLayout_3->addLayout(horizontalLayout_4);
-
-
-        verticalLayout->addLayout(horizontalLayout_3);
+        verticalLayout->addLayout(horizontalLayout_4);
 
 
         horizontalLayout_2->addWidget(groupBox_4);
@@ -188,8 +228,14 @@ public:
         actionAbout->setText(QCoreApplication::translate("MainWindow", "\345\205\263\344\272\216", nullptr));
         actionHelp->setText(QCoreApplication::translate("MainWindow", "\344\275\277\347\224\250\345\270\256\345\212\251", nullptr));
         groupBox_4->setTitle(QCoreApplication::translate("MainWindow", "\345\212\237\350\203\275\345\214\272", nullptr));
-        btnTest->setText(QCoreApplication::translate("MainWindow", "Test", nullptr));
+        groupBox->setTitle(QCoreApplication::translate("MainWindow", "\345\275\225\345\210\266\347\220\264\350\260\261", nullptr));
+        btnRecord->setText(QCoreApplication::translate("MainWindow", "\345\274\200\345\247\213\345\275\225\345\210\266", nullptr));
+        label->setText(QCoreApplication::translate("MainWindow", "\346\233\262\345\220\215", nullptr));
+        edtName->setText(QCoreApplication::translate("MainWindow", "\346\233\262\345\220\215", nullptr));
+        label_2->setText(QCoreApplication::translate("MainWindow", "\344\275\234\350\200\205", nullptr));
+        edtAuthor->setText(QCoreApplication::translate("MainWindow", "\344\275\234\350\200\205", nullptr));
         checkBoxTopWindow->setText(QCoreApplication::translate("MainWindow", "\347\252\227\345\217\243\347\275\256\351\241\266", nullptr));
+        checkBoxhasDelay->setText(QCoreApplication::translate("MainWindow", "\345\257\274\345\207\272\345\220\253\345\273\266\346\227\266\344\277\241\346\201\257", nullptr));
         btnLoad->setText(QCoreApplication::translate("MainWindow", "\344\273\216\346\226\207\344\273\266\344\270\255\350\275\275\345\205\245", nullptr));
         btnResetHotkey->setText(QCoreApplication::translate("MainWindow", "\351\207\215\350\256\276\345\256\217\346\214\211\351\224\256", nullptr));
         cmbHot1->setItemText(0, QCoreApplication::translate("MainWindow", "\347\251\272", nullptr));

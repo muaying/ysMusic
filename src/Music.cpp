@@ -6,6 +6,7 @@
 #include <QFile>
 
 //工厂函数
+//根据文件名 创建music
 Music *Music::createMusic(QString filename, QString &status)
 {
 	QFile qFile(filename);
@@ -77,6 +78,82 @@ Music *Music::createMusic(QString filename, QString &status)
 	}
 	status="文件打开失败";
 	return nullptr;
+}
+//根据按键 信息绘制琴谱
+
+Music *Music::createMusic(QString name,QString author,const QList<std::pair<unsigned int,int>>& sheet)
+{
+	if(sheet.isEmpty())
+		return nullptr;
+	Music* ret=new Music(author,name);
+	int timePoint=sheet[0].second;
+	QString sBuf;
+	for(auto& item:sheet)
+	{
+		//小于5ms表示 同时按下
+		int d=item.second-timePoint;
+		if(d<5)
+		{
+			sBuf.append(QChar(item.first));
+			timePoint=item.second;
+		}
+		else
+		{
+			//得到一个  拍子 存入
+			ret->m_sheet.append(std::make_pair(sBuf,d));
+			//录取下一个 拍子
+			sBuf.clear();
+			sBuf.append(QChar(item.first));
+			timePoint=item.second;
+		}
+	}
+	if(!ret->m_sheet.isEmpty())
+		return ret;
+	else
+		delete ret;
+	return nullptr;
+}
+
+void Music::toFile(QTextStream& stream,bool hasDelay)const
+{
+	stream<<"author:"<<m_author<<",\nmusicName:"<<m_name<<",\nsheet:\n";
+	int n=0;
+	if(hasDelay)
+	{
+		for(auto & i:m_sheet)
+		{
+			if(n>6)
+			{
+				n=0;
+				stream<<"\n";
+			}
+			if(i.first.size()>1)
+				//有和弦
+				stream<<'('<<i.first<<')'<<QString::number(i.second);
+			else
+				//没有和弦
+				stream<<i.first<<QString::number(i.second);
+			++n;
+		}
+	}
+	else
+	{
+		for(auto & i:m_sheet)
+		{
+			if(n>6)
+			{
+				n=0;
+				stream<<"\n";
+			}
+			if(i.first.size()>1)
+				//有和弦
+				stream<<" ("<<i.first<<") ";
+			else
+				//没有和弦
+				stream<<" "<<i.first<<" ";
+			++n;
+		}
+	}
 }
 
 
