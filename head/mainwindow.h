@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "helpwindow.h"
 #include "musicListModel.h"
+#include "MyHook.h"
 #include <QMenu>
 namespace Ui
 {
@@ -41,6 +42,7 @@ private:
 	HelpWindow* m_pHelpWindow;
 	QMenu* m_pTableMenu;//tableView 右键菜单
 	QAction* m_pTableDelete;//tableView 删除功能键
+
 };
 
 #endif // MAINWINDOW_H

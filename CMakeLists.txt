@@ -23,9 +23,21 @@ qt6_add_resources(QRC Resources.qrc)
 # 头文件目录
 include_directories(head)
 include_directories(ui)
-add_executable(${PROJECT_NAME} WIN32
-        ${UI} ${QRC}
-        ${SRC} ${HEAD} icon.rc)
+
+# 编译模式判断
+if(CMAKE_BUILD_TYPE MATCHES "Debug")
+    message("Debug Build")
+    add_executable(${PROJECT_NAME}
+            ${UI} ${QRC}
+            ${SRC} ${HEAD} icon.rc)
+elseif(CMAKE_BUILD_TYPE MATCHES "Release")
+    message("Release Build")
+    add_executable(${PROJECT_NAME} WIN32
+            ${UI} ${QRC}
+            ${SRC} ${HEAD} icon.rc)
+endif()
+
+
 target_link_libraries(${PROJECT_NAME}
         Qt::Core
         Qt::Gui

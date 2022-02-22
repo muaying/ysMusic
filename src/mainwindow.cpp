@@ -32,6 +32,9 @@ void MainWindow::init()
 	m_pTableDelete->setText("删除");
 	m_pTableMenu->addAction(m_pTableDelete);
 	ui->tableView->selectRow(0);
+
+
+
 	//注册热键
 	m_pHotkey1 = new QHotkey(QKeySequence("F6"), false, this);
 	m_pHotkey2= new QHotkey(QKeySequence("ctrl+F6"), false, this);
