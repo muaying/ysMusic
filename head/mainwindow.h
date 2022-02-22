@@ -25,6 +25,7 @@ public:
 private slots:
 	void resetHotKey();
 	void about();
+	void loadFile();
     signals:
             void doPlay(QList <std::pair<QString, int>>& music);
 

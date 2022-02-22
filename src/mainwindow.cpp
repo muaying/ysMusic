@@ -15,6 +15,23 @@ MainWindow::MainWindow(QWidget *parent) :
 	init();
 }
 
+
+void MainWindow::loadFile()
+{
+	QString filename=QFileDialog::getOpenFileName(this,"选择文件","./","琴谱文件(*.txt)");
+	if(!filename.isEmpty())
+	{
+		QString status;
+		Music* m=Music::createMusic(filename,status);
+		if(m== nullptr)
+			QMessageBox::warning(this, "错误", "载入失败，原因："+status);
+		else
+		{
+			m_musicList.addMusic(*m);
+			delete m;
+		}
+	}
+}
 void MainWindow::init()
 {
 	m_pHelpWindow=new HelpWindow(this);
@@ -101,21 +118,8 @@ void MainWindow::init()
 	connect(ui->actionHelp,&QAction::triggered,this,[this](){
 		m_pHelpWindow->show();
 	});
-	connect(ui->btnLoad,&QPushButton::clicked,this,[this](){
-		QString filename=QFileDialog::getOpenFileName(this,"选择文件","./","琴谱文件(*.txt)");
-		if(!filename.isEmpty())
-		{
-			QString status;
-			Music* m=Music::createMusic(filename,status);
-			if(m== nullptr)
-				QMessageBox::warning(this, "错误", "载入失败，原因："+status);
-			else
-			{
-				m_musicList.addMusic(*m);
-				delete m;
-			}
-		}
-	});
+	connect(ui->btnLoad,&QPushButton::clicked,this,&MainWindow::loadFile);
+	connect(ui->actionLoad,&QAction::triggered,this,&MainWindow::loadFile);
 	connect(ui->btnRecord,&QPushButton::clicked,this,[this](){
 		if(ui->btnRecord->text()=="开始录制")
 		{
@@ -146,7 +150,7 @@ void MainWindow::init()
 	//删除功能
 	connect(m_pTableDelete,&QAction::triggered,this,[this](){
 		QModelIndex index = ui->tableView->currentIndex();
-		if(index.isValid()&&index.row()>1)
+		if(index.isValid()&&index.row()>2)
 			m_musicList.deleteMusic(index.row());
 	});
 	//导出琴谱

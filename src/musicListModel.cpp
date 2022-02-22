@@ -9,8 +9,13 @@ musicListModel::musicListModel(QObject *parent)
 	QString status;
 	Music* pMusic=Music::createMusic(":/res/sheet/1.txt",status);
 	m_musicList.push_back(*pMusic);
+	delete pMusic;
 	pMusic=Music::createMusic(":/res/sheet/2.txt",status);
 	m_musicList.push_back(*pMusic);
+	delete pMusic;
+	pMusic=Music::createMusic(":/res/sheet/3.txt",status);
+	m_musicList.push_back(*pMusic);
+	delete pMusic;
 }
 
 QVariant musicListModel::headerData(int section, Qt::Orientation orientation, int role) const

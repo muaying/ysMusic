@@ -13,7 +13,7 @@
 class Music {
 public:
 	static Music*  createMusic(QString filename,QString& status);//工厂函数
-	static Music* createMusic(QString name,QString author,const QList<std::pair<unsigned int,int>>& sheet);
+	static Music*  createMusic(QString name,QString author,const QList<std::pair<unsigned int,int>>& sheet);
 	QList<std::pair<QString,int>>& getSheet();
 	void toFile(QTextStream& stream,bool hasDelay)const;
 

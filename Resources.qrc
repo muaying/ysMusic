@@ -3,5 +3,6 @@
         <file>res/imgs/miao.png</file>
         <file>res/sheet/1.txt</file>
         <file>res/sheet/2.txt</file>
+        <file>res/sheet/3.txt</file>
     </qresource>
 </RCC>

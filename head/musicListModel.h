@@ -23,6 +23,8 @@ public:
 	void addMusic(Music& m);
 	void deleteMusic(int row);
 	QList<std::pair<QString,int>>& getSheet(int row);
+
+
 private:
 	QList<QString> m_headers;
 	QList<Music> m_musicList;
