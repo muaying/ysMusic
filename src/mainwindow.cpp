@@ -10,6 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     setWindowIcon(QIcon(":/res/imgs/miao.png"));
     ui->setupUi(this);
+	if(MyHook::getMyHook()->install()!=0)
+		QMessageBox::warning(this,"错误","Hook注册失败，程序无法正常运行");
 	init();
 }
 
@@ -32,25 +34,22 @@ void MainWindow::init()
 	m_pTableDelete->setText("删除");
 	m_pTableMenu->addAction(m_pTableDelete);
 	ui->tableView->selectRow(0);
-
-
-
 	//注册热键
-	m_pHotkey1 = new QHotkey(QKeySequence("F6"), false, this);
-	m_pHotkey2= new QHotkey(QKeySequence("ctrl+F6"), false, this);
-	if (!m_pHotkey1->setRegistered(true)or!m_pHotkey2->setRegistered(true))
+	if (m_Hotkey1.registerKey("F6")&&m_Hotkey2.registerKey("CTRL+F6"))
+	{
+		ui->cmbHot1->setCurrentIndex(1);
+	}else
 	{
 		QMessageBox::warning(this, "提示", "检测到热键冲突，请手动设置热键");
-		m_pHotkey2->setRegistered(false);
-		m_pHotkey1->setRegistered(false);
-	}else
-		ui->cmbHot1->setCurrentIndex(1);
+		m_Hotkey1.unregisterKey();
+		m_Hotkey2.unregisterKey();
+	}
 	connect(ui->btnResetHotkey,&QPushButton::clicked,this,&MainWindow::resetHotKey);
 	//槽函数绑定
 	connect(this,&MainWindow::doPlay,&this->m_player,&Player::play);
 
 	//播放与暂停
-	connect(this->m_pHotkey1,&QHotkey::activated,[this]()
+	connect(&this->m_Hotkey1,&MyHotKey::active,[this]()
 	{
 
 		if(!m_player.isPlaying())//还没有在播放状态 播放
@@ -70,7 +69,7 @@ void MainWindow::init()
 
 	});
 	//结束播放
-	connect(this->m_pHotkey2,&QHotkey::activated,[this](){
+	connect(&this->m_Hotkey2,&MyHotKey::active,[this](){
 		if(m_player.isPlaying())
 		{
 			m_player.setFlag(false);
@@ -112,15 +111,6 @@ void MainWindow::init()
 		}
 	});
 	connect(ui->btnTest,&QPushButton::clicked,this,[this](){
-		QString status;
-		Music* pMusic=Music::createMusic(":/res/sheet/1.txt",status);
-		if(pMusic!= nullptr)
-		{
-			if(!m_musicList.addMusic(*pMusic))
-				QMessageBox::warning(this, "提示", "当前歌曲已存在");
-			delete pMusic;
-		}else
-			QMessageBox::warning(this, "错误", "载入失败，原因："+status);
 	});
 
 	//表格右键菜单
@@ -144,23 +134,23 @@ void MainWindow::init()
 void MainWindow::resetHotKey()
 {
     QString key = ui->cmbHot1->currentText();
-    m_pHotkey1->setRegistered(false);
-	m_pHotkey2->setRegistered(false);
+    m_Hotkey1.unregisterKey();
+	m_Hotkey1.unregisterKey();
     if (key == "空")
         QMessageBox::warning(this, "警告", "请选择合适的热键");
 	else
 	{
-		m_pHotkey1 = new QHotkey(QKeySequence(key), false, this);
-		m_pHotkey2= new QHotkey(QKeySequence("ctrl+"+key), false, this);
 
-		if (m_pHotkey1->setRegistered(true)&&m_pHotkey2->setRegistered(true))
-			QMessageBox::information(this, "提示", "重设热键成功");
+		if (m_Hotkey1.registerKey("F6")&&m_Hotkey2.registerKey("CTRL+F6"))
+		{
+			QMessageBox::warning(this, "提示", "热键重设成功");
+		}
 		else
 		{
 			QMessageBox::warning(this, "提示", "检测到热键冲突，请重新设置热键");
 			ui->cmbHot1->setCurrentText("空");
-			m_pHotkey1->setRegistered(false);
-			m_pHotkey2->setRegistered(false);
+			m_Hotkey1.unregisterKey();
+			m_Hotkey1.unregisterKey();
 		}
 	}
 }
@@ -170,6 +160,7 @@ MainWindow::~MainWindow()
 	m_player.setFlag(false);
     m_pThread->quit();
 	m_pThread->wait();
+	MyHook::getMyHook()->uninstall();
     delete ui;
 }
 

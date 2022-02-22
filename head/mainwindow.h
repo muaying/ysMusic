@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <qhotkey.h>
 #include <QThread>
 #include "Player.h"
 #include "helpwindow.h"
@@ -34,14 +33,15 @@ private:
 	void init();
 private:
     Ui::MainWindow *ui;
-    QHotkey *m_pHotkey1;//热键1 开始和停止
-	QHotkey *m_pHotkey2;//热键2 暂停
+    MyHotKey m_Hotkey1;//热键1 开始和停止
+	MyHotKey m_Hotkey2;//热键2 暂停
     Player m_player;
     QThread *m_pThread;
 	musicListModel m_musicList;
 	HelpWindow* m_pHelpWindow;
 	QMenu* m_pTableMenu;//tableView 右键菜单
 	QAction* m_pTableDelete;//tableView 删除功能键
+
 
 };
 
