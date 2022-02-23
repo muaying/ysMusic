@@ -77,11 +77,7 @@ void MainWindow::init()
 	{
 
 		if(!m_player.isPlaying())//还没有在播放状态 播放
-		{
-			m_player.setPause(false);
-			m_player.setFlag(true);
 			emit doPlay(m_musicList.getSheet(ui->tableView->selectionModel()->currentIndex().row()));
-		}
 		else
 		{
 			//控制暂停
@@ -95,10 +91,12 @@ void MainWindow::init()
 	//结束播放
 	connect(&this->m_Hotkey2,&MyHotKey::active,[this](){
 		if(m_player.isPlaying())
-		{
-			m_player.setFlag(false);
-			QThread::msleep(10);
-		}
+			m_player.reset();
+	});
+	connect(ui->tableView,&QTableView::clicked,this,[this]()
+	{
+		if(m_player.isPlaying())
+			m_player.reset();
 	});
 	connect(ui->actionAbout,&QAction::triggered,this,&MainWindow::about);
 	connect(ui->checkBoxTopWindow,&QCheckBox::stateChanged,this,[this](int flag){
@@ -215,7 +213,7 @@ void MainWindow::about()
 	QMessageBox::about(this,"关于",
 					   R"(作者：越行勤
 程序简介：原神简易弹琴助手
-版本：1.5
+版本：1.6
 博客：blog.yxqin.top
 项目地址：https://gitee.com/yuexingqin/ysMusic)");
 }

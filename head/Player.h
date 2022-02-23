@@ -21,6 +21,9 @@ class Player : public QObject
 public:
     Player(QObject *parent = nullptr);
 
+	//恢复 没有弹奏的状态
+	void reset();
+
 	//是否弹奏完成
     bool isPlaying()const;
 	//控制暂停  true暂停 false 继续播放

@@ -17,9 +17,17 @@ bool Player::isPlaying()const {
     return playing;
 }
 
+void Player::reset()
+{
+	flag=false;
+	pause= false;
+	QThread::msleep(10);
+}
 void Player::play(QList <std::pair<QString, int>>& musics)
 {
 	playing=true;
+	flag=true;
+	pause= false;
 //	qDebug()<<"正在弹奏";
 	auto m=musics.begin();
 	while(flag&&m!=musics.end())

@@ -12,6 +12,7 @@ Music *Music::createMusic(QString filename, QString &status)
 	QFile qFile(filename);
 	QString author="";
 	QString name="";
+	int type=1;
 	if(qFile.open(QFile::ReadOnly))
 	{
 		QByteArray data = qFile.readAll();
@@ -22,11 +23,14 @@ Music *Music::createMusic(QString filename, QString &status)
 		int delay = 100;
 		for (auto it = data.cbegin(); it < data.cend(); ++it)
 		{
-			if (*it == ' ' || *it == '\n' || *it == '\r') {
+			if (*it == ' ' || *it == '\n' || *it == '\r')
+			{
 				continue;
-			} else if (*it == ':') {
+			} else if (*it == ':')
+			{
 				QByteArray tmp;
-				while (*it != ',' && it != data.cend() && *it != '\x00') {
+				while (*it != ',' && it != data.cend() && *it != '\x00')
+				{
 					++it;
 					if (*it == ' ' || *it == '\n' || *it == '\r' || *it == ',' || *it == '\x00')
 						continue;
@@ -43,6 +47,14 @@ Music *Music::createMusic(QString filename, QString &status)
 						delay = val;
 				} else if (buf == "sheet")
 					strSheet = tmp;
+				else if(buf=="type")
+				{
+					bool ok;
+					type=tmp.toInt(&ok);
+					if(!ok)
+						type=false;
+				}
+
 				buf.clear();
 			} else
 				buf.append(*it);
@@ -61,12 +73,14 @@ Music *Music::createMusic(QString filename, QString &status)
 				else
 				{
 					status="解析琴谱失败";
+					delete ret;
 					return nullptr;
 				}
 			}
 			catch (std::exception e)
 			{
 				status=e.what();
+				delete ret;
 				return nullptr;
 			}
 		}
@@ -80,7 +94,6 @@ Music *Music::createMusic(QString filename, QString &status)
 	return nullptr;
 }
 //根据按键 信息绘制琴谱
-
 Music *Music::createMusic(QString name,QString author,const QList<std::pair<unsigned int,int>>& sheet)
 {
 	if(sheet.isEmpty())
@@ -228,3 +241,28 @@ bool Music::analyze1(QString& strSheet,int delay)
 	}
 	return !m_sheet.isEmpty();
 }
+
+///*
+// *  +5 高音
+// *   5 中音
+// *  -5 低音
+// *
+//5~~~    四拍
+//5~      二拍
+//5       一拍
+//5_      半拍
+//5__     四分之一拍
+//5___    八分之一拍
+//5.       附点音符
+//
+// *
+// * */
+//bool Music::analyze2(QString& strSheet,int bmp)
+//{
+//	//映射表
+//	static QChar kb1[]={'0','Q','W','E','R','T','Y','U'};
+//	static QChar kb2[]={'0','A','S','D','F','G','H','J'};
+//	static QChar kb3[]={'0','Z','X','C','V','B','N','M'};
+//
+//
+//}
