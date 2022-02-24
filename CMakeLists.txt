@@ -7,7 +7,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 #添加 QT 库  需要自行更改
-set(CMAKE_PREFIX_PATH "D:/Software/SDK/QT/6.2.2/mingw_64")
+set(CMAKE_PREFIX_PATH "D:/Software/SDK/QT/6.2.3/mingw_64")
 # 导入 QT包
 find_package(Qt6 COMPONENTS
         Core

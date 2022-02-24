@@ -5,7 +5,7 @@
 这是一个练习QT的demo,用于学习交流,希望大家不要嫌弃
 曲谱来自：
 https://space.bilibili.com/76052941
-B站演示 视频：https://www.bilibili.com/video/BV1LT4y1y73C?share_source=copy_web
+B站演示视频：https://www.bilibili.com/video/BV1gY411G7rq/
 
 ## 下载
 阿里云盘：https://www.aliyundrive.com/s/sCLpT1vJi51
@@ -112,7 +112,7 @@ PS:本软件已强制使用管理身份运行
         穿越时空的思念.txt
 ```
 
-
+mt.exe -manifest "uac.manifest" -outputresource:"原神弹琴助手1.6.exe"
 
 ## 更新日志
 ### 2.0？？
@@ -146,3 +146,6 @@ PS: 程序启动自动载入了琴谱1，按下热键可以开始弹奏；载入
 
 
 
+
+
+mt.exe -manifest "uac.manifest" -outputresource:"原神弹琴助手.exe.exe"
