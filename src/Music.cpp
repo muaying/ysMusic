@@ -7,12 +7,13 @@
 
 //工厂函数
 //根据文件名 创建music
-Music *Music::createMusic(QString filename, QString &status)
+Music Music::createMusic(QString filename)
 {
 	QFile qFile(filename);
 	QString author="";
 	QString name="";
 	int type=1;
+	Music ret;
 	if(qFile.open(QFile::ReadOnly))
 	{
 		QByteArray data = qFile.readAll();
@@ -54,58 +55,34 @@ Music *Music::createMusic(QString filename, QString &status)
 					if(!ok)
 						type=false;
 				}
-
 				buf.clear();
 			} else
 				buf.append(*it);
 		}
-
-		if(!strSheet.isEmpty())
-		{
-			Music* ret=new Music(author,name);
-			try
-			{
-				if(ret->analyze1(strSheet,delay))
-				{
-					status ="加载成功";
-					return ret;
-				}
-				else
-				{
-					status="解析琴谱失败";
-					delete ret;
-					return nullptr;
-				}
-			}
-			catch (std::exception e)
-			{
-				status=e.what();
-				delete ret;
-				return nullptr;
-			}
-		}
-		else
-		{
-			status="文件格式错误";
-			return nullptr;
-		}
+		ret.m_name=name;
+		ret.m_author=author;
+		if(!ret.analyze1(strSheet,delay))
+			throw("琴谱解析失败");
 	}
-	status="文件打开失败";
-	return nullptr;
+	else
+	{
+		throw ("文件无法打开");
+	}
+	return ret;
 }
 //根据按键 信息绘制琴谱
-Music *Music::createMusic(QString name,QString author,const QList<std::pair<unsigned int,int>>& sheet)
+Music Music::createMusic(QString name,QString author,const QList<std::pair<unsigned int,int>>& sheet)
 {
-	if(sheet.isEmpty())
-		return nullptr;
-	Music* ret=new Music(author,name);
+	Music ret;
+	ret.m_name=name;
+	ret.m_author=author;
 	int timePoint=sheet[0].second;
 	QString sBuf;
 	for(auto& item:sheet)
 	{
 		//小于5ms表示 同时按下
 		int d=item.second-timePoint;
-		if(d<5)
+		if(d<6)
 		{
 			sBuf.append(QChar(item.first));
 			timePoint=item.second;
@@ -113,18 +90,14 @@ Music *Music::createMusic(QString name,QString author,const QList<std::pair<unsi
 		else
 		{
 			//得到一个  拍子 存入
-			ret->m_sheet.append(std::make_pair(sBuf,d));
+			ret.m_sheet.append(std::make_pair(sBuf,d));
 			//录取下一个 拍子
 			sBuf.clear();
 			sBuf.append(QChar(item.first));
 			timePoint=item.second;
 		}
 	}
-	if(!ret->m_sheet.isEmpty())
-		return ret;
-	else
-		delete ret;
-	return nullptr;
+	return ret;
 }
 
 void Music::toFile(QTextStream& stream,bool hasDelay)const
@@ -171,12 +144,20 @@ void Music::toFile(QTextStream& stream,bool hasDelay)const
 
 
 
-Music::Music(QString author,QString name)
+Music::Music(Music &&other)
 {
-	this->m_author=author;
-	this->m_name=name;
+	this->m_name=std::move(other.m_name);
+	this->m_author=std::move(other.m_author);
+	this->m_sheet=std::move(other.m_sheet);
 }
 
+Music &Music::operator=(Music &&other)
+{
+	this->m_name=std::move(other.m_name);
+	this->m_author=std::move(other.m_author);
+	this->m_sheet=std::move(other.m_sheet);
+	return *this;
+}
 QString Music::toString() const
 {
 	return "曲名: "+m_name+" 作者: "+m_author;

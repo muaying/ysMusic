@@ -20,14 +20,14 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 	const Music& getMusic(int row)const;
 
-	void addMusic(Music& m);
+	void addMusic(Music&& m);
 	void deleteMusic(int row);
 	QList<std::pair<QString,int>>& getSheet(int row);
 
 
 private:
 	QList<QString> m_headers;
-	QList<Music> m_musicList;
+	std::vector<Music> m_musicList;
 };
 
 #endif // MUSICLISTMODEL_H

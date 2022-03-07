@@ -6,16 +6,9 @@ musicListModel::musicListModel(QObject *parent)
 	m_headers.clear();
 	m_headers<<"曲名"<<"作者";
 	m_musicList.clear();
-	QString status;
-	Music* pMusic=Music::createMusic(":/res/sheet/1.txt",status);
-	m_musicList.push_back(*pMusic);
-	delete pMusic;
-	pMusic=Music::createMusic(":/res/sheet/2.txt",status);
-	m_musicList.push_back(*pMusic);
-	delete pMusic;
-	pMusic=Music::createMusic(":/res/sheet/3.txt",status);
-	m_musicList.push_back(*pMusic);
-	delete pMusic;
+	m_musicList.push_back(Music::createMusic(":/res/sheet/1.txt"));
+	m_musicList.push_back(Music::createMusic(":/res/sheet/2.txt"));
+	m_musicList.push_back(Music::createMusic(":/res/sheet/3.txt"));
 }
 
 QVariant musicListModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -85,11 +78,11 @@ QVariant musicListModel::data(const QModelIndex &index, int role) const
 	return QVariant();
 }
 
-void musicListModel::addMusic(Music &m)
+void musicListModel::addMusic(Music &&m)
 {
 	int nCount = rowCount();
 	beginInsertRows(QModelIndex(), nCount,nCount);
-	m_musicList.push_back(m);
+	m_musicList.push_back(std::forward<Music>(m));
 	endInsertRows();
 }
 
@@ -100,7 +93,7 @@ void musicListModel::deleteMusic(int row)
 		beginRemoveRows(QModelIndex(),row,row);
 
 		qDebug()<<"删除行："+QString::number(row)+" music"+m_musicList[row].toString();
-		m_musicList.remove(row);
+		m_musicList.erase(m_musicList.cbegin()+row);
 
 		endRemoveRows();
 	}

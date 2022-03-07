@@ -21,14 +21,11 @@ void MainWindow::loadFile()
 	QString filename=QFileDialog::getOpenFileName(this,"选择文件","./","琴谱文件(*.txt)");
 	if(!filename.isEmpty())
 	{
-		QString status;
-		Music* m=Music::createMusic(filename,status);
-		if(m== nullptr)
-			QMessageBox::warning(this, "错误", "载入失败，原因："+status);
-		else
+		try {
+			m_musicList.addMusic(Music::createMusic(filename));
+		}catch (const char* str)
 		{
-			m_musicList.addMusic(*m);
-			delete m;
+			QMessageBox::warning(this,"错误",str);
 		}
 	}
 }
@@ -127,12 +124,7 @@ void MainWindow::init()
 		else
 		{
 			auto res=MyHook::getMyHook()->endRecording();
-			Music* m=Music::createMusic(ui->edtName->text(),ui->edtAuthor->text(),res);
-			if(m!= nullptr)
-			{
-				m_musicList.addMusic(*m);
-				delete m;
-			}
+			m_musicList.addMusic(Music::createMusic(ui->edtName->text(),ui->edtAuthor->text(),res));
 			ui->btnRecord->setText("开始录制");
 		}
 	});

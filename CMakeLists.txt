@@ -1,14 +1,15 @@
 cmake_minimum_required(VERSION 3.20)
 project(ysMusic)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 #添加 QT 库  需要自行更改
-set(CMAKE_PREFIX_PATH "D:/Software/SDK/QT/6.2.3/mingw_64")
+set(CMAKE_PREFIX_PATH "D:/Software/SDK/Qt/6.2.3/mingw_64")
 # 导入 QT包
+
 find_package(Qt6 COMPONENTS
         Core
         Gui
