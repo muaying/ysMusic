@@ -3,10 +3,10 @@
 
 #include <QMainWindow>
 #include <QThread>
-#include "Player.h"
-#include "helpwindow.h"
-#include "musicListModel.h"
-#include "MyHook.h"
+#include "../../Player/Player.h"
+#include "../helpWindow/helpwindow.h"
+#include "../../musicListModel/musicListModel.h"
+#include "../../MyHook/MyHook.h"
 #include <QMenu>
 namespace Ui
 {

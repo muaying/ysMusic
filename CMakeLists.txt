@@ -15,27 +15,31 @@ find_package(Qt6 COMPONENTS
         Gui
         Widgets
         REQUIRED)
-# 编译文件目录
-file(GLOB SRC src/*.cpp)
-file(GLOB HEAD head/*.h)
-file(GLOB UI ui/*.h)
-#添加资源文件
-qt6_add_resources(QRC Resources.qrc)
-# 头文件目录
-include_directories(head)
-include_directories(ui)
-
-# 编译模式判断
+# 源码文件
+aux_source_directory(src/Window/helpWindow helpWindow_src)
+aux_source_directory(src/Window/mainWindow mainWindow_src)
+aux_source_directory(src/Music music_src)
+aux_source_directory(src/MyHook MyHook_src)
+aux_source_directory(src/Player player_src)
+aux_source_directory(src/musicListModel musicList_src)
+set(SRCS
+        Resources.qrc
+        src/main.cpp
+        ${music_src}
+        ${MyHook_src}
+        ${player_src}
+        ${musicList_src}
+        ${helpWindow_src}
+        ${mainWindow_src}
+        src/icon.rc
+        )
+# debug 模式带 边框
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
     message("Debug Build")
-    add_executable(${PROJECT_NAME}
-            ${UI} ${QRC}
-            ${SRC} ${HEAD} icon.rc)
+    add_executable(${PROJECT_NAME}   ${SRCS} )
 elseif(CMAKE_BUILD_TYPE MATCHES "Release")
     message("Release Build")
-    add_executable(${PROJECT_NAME} WIN32
-            ${UI} ${QRC}
-            ${SRC} ${HEAD} icon.rc)
+    add_executable(${PROJECT_NAME} WIN32 ${SRCS})
 endif()
 
 

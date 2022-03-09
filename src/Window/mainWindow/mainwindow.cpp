@@ -5,9 +5,9 @@
 #include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent) :
-        QMainWindow(parent),
-        ui(new Ui::MainWindow)
+        QMainWindow(parent)
 {
+	this->ui=new Ui::MainWindow;
     setWindowIcon(QIcon(":/res/imgs/miao.png"));
     ui->setupUi(this);
 	if(MyHook::getMyHook()->install()!=0)

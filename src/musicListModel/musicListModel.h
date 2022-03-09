@@ -2,7 +2,7 @@
 #define MUSICLISTMODEL_H
 
 #include <QAbstractTableModel>
-#include "Music.h"
+#include "../Music/Music.h"
 
 class musicListModel : public QAbstractTableModel
 {
